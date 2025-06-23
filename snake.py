@@ -1,3 +1,5 @@
+from typing import Any
+
 import pygame
 import random as rnd
 
@@ -5,6 +7,36 @@ GRID_COLS = 10
 GRID_ROWS = 10
 
 MOVE_DELAY = 75
+
+
+def print_map(gmap: list) -> None:
+    """Display the map"""
+    for row in gmap:
+        print(" ".join(row))
+    print()
+
+
+def create_map() -> tuple[list[Any], pygame.Vector2]:
+    """Create a randomize Snake map"""
+    gmap = []
+
+    head_x = rnd.randrange(10)
+    head_y = rnd.randrange(10)
+
+    for y in range(GRID_ROWS):
+        row = []
+
+        for x in range(GRID_COLS):
+            if x == head_x and y == head_y:
+                row.append("H")
+            else:
+                row.append("0")
+
+        gmap.append(row)
+
+    print_map(gmap)
+
+    return gmap, pygame.Vector2(head_x, head_y)
 
 
 def keys(key: pygame.key, player_pos: pygame.Vector2, now, last_move_time: int, running: bool) -> tuple[int, bool]:
@@ -53,7 +85,7 @@ def snake() -> None:
     texture = pygame.image.load("assets/snake/head_up.png")
     texture = pygame.transform.scale(texture, (CELL_WIDTH, CELL_HEIGHT))
 
-    player_pos = pygame.Vector2(rnd.randint(0, GRID_COLS - 1), rnd.randint(0, GRID_ROWS - 1))
+    gmap, player_pos = create_map()
 
     last_move_time = pygame.time.get_ticks()
 
@@ -70,13 +102,15 @@ def snake() -> None:
 
         screen.fill("white")
 
-        screen.blit(
-            texture,
-            (
-                player_pos.x * CELL_WIDTH,
-                player_pos.y * CELL_HEIGHT,
-            )
-        )
+        for y in range(GRID_ROWS):
+
+            for x in range(GRID_COLS):
+                pos_px = (x * CELL_WIDTH, y * CELL_HEIGHT)
+
+                if x == int(player_pos.x) and y == int(player_pos.y):
+                    screen.blit(texture, pos_px)
+                else:
+                    pygame.draw.rect(screen, (255, 255, 255), (pos_px[0], pos_px[1], CELL_WIDTH, CELL_HEIGHT))
 
         pygame.display.flip()
 

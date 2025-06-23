@@ -31,6 +31,9 @@ def load_textures(cell_width: int, cell_height: int) -> dict[str, pygame.Surface
         "TAIL_HEAD_DOWN": "assets/snake/tail_down.png",
         "TAIL_HEAD_LEFT": "assets/snake/tail_left.png",
         "TAIL_HEAD_RIGHT": "assets/snake/tail_right.png",
+
+        "APPLE": "assets/components/apple.png",
+        "BAD_APPLE": "assets/components/bad_apple.png",
     }
 
     textures = {}
@@ -50,12 +53,19 @@ def print_map(gmap: list) -> None:
     print()
 
 
-def create_map() -> tuple[list[Any], pygame.Vector2]:
+def create_map() -> tuple[ pygame.Vector2, list[Any], pygame.Vector2]:
     """Create a randomize Snake map"""
     gmap = []
 
     head_x = rnd.randrange(10)
     head_y = rnd.randrange(10)
+
+    while True:
+        x2 = rnd.randrange(10)
+        y2 = rnd.randrange(10)
+
+        if x2 != head_x or y2 != head_y:
+            break
 
     for y in range(GRID_ROWS):
         row = []
@@ -63,12 +73,16 @@ def create_map() -> tuple[list[Any], pygame.Vector2]:
         for x in range(GRID_COLS):
             if x == head_x and y == head_y:
                 row.append("H")
+            elif x == x2 and y == y2:
+                row.append("A")
             else:
                 row.append("0")
 
         gmap.append(row)
 
-    return gmap, pygame.Vector2(head_x, head_y)
+    print_map(gmap)
+
+    return pygame.Vector2(x2, y2), gmap, pygame.Vector2(head_x, head_y)
 
 
 def keys(key: pygame.key, player_pos: pygame.Vector2, now, last_move_time: int, running: bool) -> tuple[int, bool]:
@@ -116,7 +130,7 @@ def snake() -> None:
 
     textures = load_textures(CELL_WIDTH, CELL_HEIGHT)
 
-    gmap, player_pos = create_map()
+    apple_pos, gmap, player_pos = create_map()
 
     last_move_time = pygame.time.get_ticks()
 
@@ -140,6 +154,8 @@ def snake() -> None:
 
                 if x == int(player_pos.x) and y == int(player_pos.y):
                     screen.blit(textures["SNAKE_HEAD_DOWN"], pos_px)
+                elif x == int(apple_pos.x) and y == int(apple_pos.y):
+                    screen.blit(textures["APPLE"], pos_px)
                 else:
                     pygame.draw.rect(screen, (255, 255, 255), (pos_px[0], pos_px[1], CELL_WIDTH, CELL_HEIGHT))
 

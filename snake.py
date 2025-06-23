@@ -1,4 +1,5 @@
 import pygame
+import random as rnd
 
 GRID_COLS = 10
 GRID_ROWS = 10
@@ -49,9 +50,7 @@ def snake() -> None:
     CELL_WIDTH = screen.get_width() // GRID_COLS
     CELL_HEIGHT = screen.get_height() // GRID_ROWS
 
-    random
-
-    player_pos = pygame.Vector2(5, 5)
+    player_pos = pygame.Vector2(rnd.randint(0, GRID_COLS - 1), rnd.randint(0, GRID_ROWS - 1))
 
     last_move_time = pygame.time.get_ticks()
 

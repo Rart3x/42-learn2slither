@@ -50,6 +50,9 @@ def snake() -> None:
     CELL_WIDTH = screen.get_width() // GRID_COLS
     CELL_HEIGHT = screen.get_height() // GRID_ROWS
 
+    texture = pygame.image.load("assets/snake/head_up.png")
+    texture = pygame.transform.scale(texture, (CELL_WIDTH, CELL_HEIGHT))
+
     player_pos = pygame.Vector2(rnd.randint(0, GRID_COLS - 1), rnd.randint(0, GRID_ROWS - 1))
 
     last_move_time = pygame.time.get_ticks()
@@ -67,15 +70,12 @@ def snake() -> None:
 
         screen.fill("white")
 
-        pygame.draw.rect(
-            screen,
-            "red",
+        screen.blit(
+            texture,
             (
                 player_pos.x * CELL_WIDTH,
                 player_pos.y * CELL_HEIGHT,
-                CELL_WIDTH,
-                CELL_HEIGHT,
-            ),
+            )
         )
 
         pygame.display.flip()

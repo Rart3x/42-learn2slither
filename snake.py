@@ -85,7 +85,7 @@ def create_map() -> tuple[ pygame.Vector2, list[Any], pygame.Vector2]:
     return pygame.Vector2(x2, y2), gmap, pygame.Vector2(head_x, head_y)
 
 
-def keys(key: pygame.key, player_pos: pygame.Vector2, now, last_move_time: int, running: bool) -> tuple[int, bool]:
+def keys(key: pygame.key, player_pos: pygame.Vector2, now, last_move_time: int, running: bool, snake_orientation: str) -> tuple[int, bool, str]:
     """Key handle function"""
     if key[pygame.K_ESCAPE]:
         running = False
@@ -96,46 +96,53 @@ def keys(key: pygame.key, player_pos: pygame.Vector2, now, last_move_time: int, 
         if key[pygame.K_w] or key[pygame.K_UP]:
             if player_pos.y > 0.0:
                 player_pos.y -= 1
+                snake_orientation = "NORTH"
 
         # Down movements
         elif key[pygame.K_s] or key[pygame.K_DOWN]:
             if player_pos.y < GRID_ROWS - 1:
                 player_pos.y += 1
+                snake_orientation = "SOUTH"
 
         # Left movements
         elif key[pygame.K_a] or key[pygame.K_LEFT]:
             if player_pos.x > 0.0:
                 player_pos.x -= 1
+                snake_orientation = "WEST"
 
         # Right movements
         elif key[pygame.K_d] or key[pygame.K_RIGHT]:
             if player_pos.x < GRID_COLS - 1:
                 player_pos.x += 1
+                snake_orientation = "EAST"
 
         last_move_time = now
 
-    return last_move_time, running
+    return last_move_time, running, snake_orientation
 
 
 def snake() -> None:
     """Snake function"""
     pygame.init()
     pygame.display.set_caption("🐍 Learn2Slither 🐍")
+
     screen = pygame.display.set_mode((1280, 720))
+
     clock = pygame.time.Clock()
+
     running = True
 
     CELL_WIDTH = screen.get_width() // GRID_COLS
     CELL_HEIGHT = screen.get_height() // GRID_ROWS
 
     textures = load_textures(CELL_WIDTH, CELL_HEIGHT)
-
     apple_pos, gmap, player_pos = create_map()
 
     last_move_time = pygame.time.get_ticks()
 
-    while running:
+    snake_orientation = 'NORTH'
 
+    while running:
         now = pygame.time.get_ticks()
 
         for event in pygame.event.get():
@@ -143,7 +150,7 @@ def snake() -> None:
                 running = False
 
         key = pygame.key.get_pressed()
-        last_move_time, running = keys(key, player_pos, now, last_move_time, running)
+        last_move_time, running, snake_orientation = keys(key, player_pos, now, last_move_time, running, snake_orientation)
 
         screen.fill("white")
 
@@ -153,7 +160,15 @@ def snake() -> None:
                 pos_px = (x * CELL_WIDTH, y * CELL_HEIGHT)
 
                 if x == int(player_pos.x) and y == int(player_pos.y):
-                    screen.blit(textures["SNAKE_HEAD_DOWN"], pos_px)
+                    if snake_orientation == 'NORTH':
+                        screen.blit(textures["SNAKE_HEAD_UP"], pos_px)
+                    elif snake_orientation == 'SOUTH':
+                        screen.blit(textures["SNAKE_HEAD_DOWN"], pos_px)
+                    elif snake_orientation == 'WEST':
+                        screen.blit(textures["SNAKE_HEAD_LEFT"], pos_px)
+                    elif snake_orientation == 'EAST':
+                        screen.blit(textures["SNAKE_HEAD_RIGHT"], pos_px)
+
                 elif x == int(apple_pos.x) and y == int(apple_pos.y):
                     screen.blit(textures["APPLE"], pos_px)
                 else:

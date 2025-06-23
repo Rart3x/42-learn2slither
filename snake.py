@@ -9,6 +9,40 @@ GRID_ROWS = 10
 MOVE_DELAY = 75
 
 
+def load_textures(cell_width: int, cell_height: int) -> dict[str, pygame.Surface]:
+    """Load and return a dictionary of textures."""
+
+    paths = {
+        "BODY_TOP_LEFT": "assets/snake/body_top_left.png",
+        "BODY_TOP_RIGHT": "assets/snake/body_top_right.png",
+
+        "BODY_BOT_LEFT": "assets/snake/body_bot_left.png",
+        "BODY_BOT_RIGHT": "assets/snake/body_bot_right.png",
+
+        "BODY_HORIZONTAL": "assets/snake/body_horizontal.png",
+        "BODY_VERTICAL": "assets/snake/body_vertical.png",
+
+        "SNAKE_HEAD_UP": "assets/snake/head_up.png",
+        "SNAKE_HEAD_DOWN": "assets/snake/head_down.png",
+        "SNAKE_HEAD_LEFT": "assets/snake/head_left.png",
+        "SNAKE_HEAD_RIGHT": "assets/snake/head_right.png",
+
+        "TAIL_HEAD_UP": "assets/snake/tail_up.png",
+        "TAIL_HEAD_DOWN": "assets/snake/tail_down.png",
+        "TAIL_HEAD_LEFT": "assets/snake/tail_left.png",
+        "TAIL_HEAD_RIGHT": "assets/snake/tail_right.png",
+    }
+
+    textures = {}
+
+    for key, path in paths.items():
+        img = pygame.image.load(path)
+        img = pygame.transform.scale(img, (cell_width, cell_height))
+        textures[key] = img
+
+    return textures
+
+
 def print_map(gmap: list) -> None:
     """Display the map"""
     for row in gmap:
@@ -33,8 +67,6 @@ def create_map() -> tuple[list[Any], pygame.Vector2]:
                 row.append("0")
 
         gmap.append(row)
-
-    print_map(gmap)
 
     return gmap, pygame.Vector2(head_x, head_y)
 
@@ -82,8 +114,7 @@ def snake() -> None:
     CELL_WIDTH = screen.get_width() // GRID_COLS
     CELL_HEIGHT = screen.get_height() // GRID_ROWS
 
-    texture = pygame.image.load("assets/snake/head_up.png")
-    texture = pygame.transform.scale(texture, (CELL_WIDTH, CELL_HEIGHT))
+    textures = load_textures(CELL_WIDTH, CELL_HEIGHT)
 
     gmap, player_pos = create_map()
 
@@ -108,7 +139,7 @@ def snake() -> None:
                 pos_px = (x * CELL_WIDTH, y * CELL_HEIGHT)
 
                 if x == int(player_pos.x) and y == int(player_pos.y):
-                    screen.blit(texture, pos_px)
+                    screen.blit(textures["SNAKE_HEAD_DOWN"], pos_px)
                 else:
                     pygame.draw.rect(screen, (255, 255, 255), (pos_px[0], pos_px[1], CELL_WIDTH, CELL_HEIGHT))
 

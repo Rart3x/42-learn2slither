@@ -53,7 +53,16 @@ def print_map(gmap: list) -> None:
     print()
 
 
-def create_map() -> tuple[ pygame.Vector2, list[Any], pygame.Vector2]:
+def find_snake_head(gmap: list) -> tuple[int, int]:
+    """Return a tuple of snake head coordinates"""
+    for y in range(GRID_ROWS):
+        for x in range(GRID_COLS):
+            if gmap[y][x] == 'H':
+                return y, x
+    return 0, 0
+
+
+def create_map() -> tuple[ pygame.Vector2, list[Any], pygame.Vector2, str]:
     """Create a randomize Snake map"""
     gmap = []
 
@@ -71,18 +80,56 @@ def create_map() -> tuple[ pygame.Vector2, list[Any], pygame.Vector2]:
         row = []
 
         for x in range(GRID_COLS):
-            if x == head_x and y == head_y:
-                row.append("H")
-            elif x == x2 and y == y2:
-                row.append("A")
-            else:
-                row.append("0")
+            row.append("0")
 
         gmap.append(row)
 
+    gmap[head_y][head_x] = "H"
+    gmap[y2][x2] = "A"
+
+    gmap, snake_orientation = create_snake_body(gmap)
+
     print_map(gmap)
 
-    return pygame.Vector2(x2, y2), gmap, pygame.Vector2(head_x, head_y)
+    return pygame.Vector2(x2, y2), gmap, pygame.Vector2(head_x, head_y), snake_orientation
+
+
+def create_snake_body(gmap: list) -> tuple[list, str]:
+    """Add snake body on gmap, choosing a valid direction randomly if multiple options are available."""
+    head_y, head_x = find_snake_head(gmap)
+    height = len(gmap)
+    width = len(gmap[0]) if height > 0 else 0
+
+    directions = []
+
+    # Check NORTH (body down from head)
+    if head_y + 2 < height and gmap[head_y + 1][head_x] == '0' and gmap[head_y + 2][head_x] == '0':
+        directions.append(("NORTH", [(head_y + 1, head_x), (head_y + 2, head_x)]))
+
+    # Check SOUTH (body up from head)
+    if head_y - 2 >= 0 and gmap[head_y - 1][head_x] == '0' and gmap[head_y - 2][head_x] == '0':
+        directions.append(("SOUTH", [(head_y - 1, head_x), (head_y - 2, head_x)]))
+
+    # Check WEST (body right from head)
+    if head_x + 2 < width and gmap[head_y][head_x + 1] == '0' and gmap[head_y][head_x + 2] == '0':
+        directions.append(("WEST", [(head_y, head_x + 1), (head_y, head_x + 2)]))
+
+    # Check EAST (body left from head)
+    if head_x - 2 >= 0 and gmap[head_y][head_x - 1] == '0' and gmap[head_y][head_x - 2] == '0':
+        directions.append(("EAST", [(head_y, head_x - 1), (head_y, head_x - 2)]))
+
+    if not directions:
+        # No valid direction to place the body
+        return gmap, ""
+
+    # Choose one random valid direction
+    chosen_direction, body_coords = rnd.choice(directions)
+
+    # Apply body on the map
+    for y, x in body_coords:
+        gmap[y][x] = 'B'
+
+    return gmap, chosen_direction
 
 
 def keys(key: pygame.key, player_pos: pygame.Vector2, now, last_move_time: int, running: bool, snake_orientation: str) -> tuple[int, bool, str]:
@@ -136,11 +183,9 @@ def snake() -> None:
     CELL_HEIGHT = screen.get_height() // GRID_ROWS
 
     textures = load_textures(CELL_WIDTH, CELL_HEIGHT)
-    apple_pos, gmap, player_pos = create_map()
+    apple_pos, gmap, player_pos, snake_orientation = create_map()
 
     last_move_time = pygame.time.get_ticks()
-
-    snake_orientation = 'NORTH'
 
     while running:
         now = pygame.time.get_ticks()
@@ -169,6 +214,11 @@ def snake() -> None:
                     elif snake_orientation == 'EAST':
                         screen.blit(textures["SNAKE_HEAD_RIGHT"], pos_px)
 
+                elif gmap[y][x] == 'B':
+                    if snake_orientation == "NORTH" or snake_orientation == "SOUTH":
+                        screen.blit(textures["BODY_VERTICAL"], pos_px)
+                    elif snake_orientation == "WEST" or snake_orientation == "EAST":
+                        screen.blit(textures["BODY_HORIZONTAL"], pos_px)
                 elif x == int(apple_pos.x) and y == int(apple_pos.y):
                     screen.blit(textures["APPLE"], pos_px)
                 else:

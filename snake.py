@@ -41,7 +41,7 @@ def snake() -> None:
                 running = False
 
         key = pygame.key.get_pressed()
-        last_move_time, running = keys(key, snake, now, last_move_time, running)
+        last_move_time, running = keys(key, gmap, snake, now, last_move_time, running)
 
         screen.fill("white")
 

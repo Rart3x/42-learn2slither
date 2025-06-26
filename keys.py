@@ -1,10 +1,11 @@
 import pygame
 
-from imports import *
 from classes.Snake import Snake, SnakeBody, SnakeComponent, SnakeHead
+from imports import *
+from map import create_new_apple
+from utils import *
 
-
-def keys(key: pygame.key,  snake: Snake, now, last_move_time: int, running: bool) -> tuple[int, bool]:
+def keys(key: pygame.key, gmap: list, snake: Snake, now, last_move_time: int, running: bool) -> tuple[int, bool]:
     """Key handle function"""
     if key[pygame.K_ESCAPE]:
         running = False
@@ -42,6 +43,10 @@ def keys(key: pygame.key,  snake: Snake, now, last_move_time: int, running: bool
             elif snake.head.orientation != "WEST":
                 snake.move("EAST")
                 snake.head.orientation = "EAST"
+
+        if is_there_apple(gmap, snake.head.pos):
+            snake.grow()
+            create_new_apple(snake, gmap)
 
         last_move_time = now
 

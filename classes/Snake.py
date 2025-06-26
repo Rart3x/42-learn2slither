@@ -26,6 +26,21 @@ class Snake:
                 if comp.pos == pos:
                     return comp
 
+    def grow(self):
+        """Add a new segment at the tail based on the tail's orientation."""
+        tail = self.components[-1]
+        tail_dir_map = {
+            "NORTH": pygame.Vector2(0, 1),  # opposite of NORTH is SOUTH
+            "SOUTH": pygame.Vector2(0, -1),
+            "WEST": pygame.Vector2(1, 0),
+            "EAST": pygame.Vector2(-1, 0)
+        }
+
+        new_pos = tail.pos + tail_dir_map[tail.orientation]
+
+        # Add new component at calculated position
+        self.add_component(new_pos, tail.orientation)
+
     def has_component_at(self, pos: pygame.Vector2) -> bool:
         """Return True if there is component at 'pos' coordinates"""
         for comp in self.components:

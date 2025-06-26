@@ -13,25 +13,33 @@ def keys(key: pygame.key,  snake: Snake, now, last_move_time: int, running: bool
 
         # Up movements
         if key[pygame.K_w] or key[pygame.K_UP]:
-            if snake.head.pos.y > 0.0:
+            if snake.head.pos.y <= 0.0:
+                exit()
+            elif snake.head.orientation != "SOUTH":
                 snake.move("NORTH")
                 snake.head.orientation = "NORTH"
 
         # Down movements
         elif key[pygame.K_s] or key[pygame.K_DOWN]:
-            if snake.head.pos.y < GRID_ROWS - 1:
+            if snake.head.pos.y >= GRID_ROWS - 1:
+                exit()
+            elif snake.head.orientation != "NORTH":
                 snake.move("SOUTH")
                 snake.head.orientation = "SOUTH"
 
         # Left movements
         elif key[pygame.K_a] or key[pygame.K_LEFT]:
-            if snake.head.pos.x > 0.0:
+            if snake.head.pos.x <= 0.0:
+                exit()
+            elif snake.head.orientation != "EAST":
                 snake.move("WEST")
                 snake.head.orientation = "WEST"
 
         # Right movements
         elif key[pygame.K_d] or key[pygame.K_RIGHT]:
-            if snake.head.pos.x < GRID_COLS - 1:
+            if snake.head.pos.x >= GRID_COLS - 1:
+                exit()
+            elif snake.head.orientation != "WEST":
                 snake.move("EAST")
                 snake.head.orientation = "EAST"
 

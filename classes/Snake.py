@@ -45,8 +45,6 @@ class Snake:
         # Save current positions
         old_positions = [comp.pos.copy() for comp in self.components]
 
-        print(old_positions)
-
         # Update head
         self.components[0].pos += dir_map[direction]
         self.components[0].orientation = direction

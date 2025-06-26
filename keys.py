@@ -32,7 +32,6 @@ def keys(key: pygame.key,  snake: Snake, now, last_move_time: int, running: bool
         # Right movements
         elif key[pygame.K_d] or key[pygame.K_RIGHT]:
             if snake.head.pos.x < GRID_COLS - 1:
-                snake.head.pos.x += 1
                 snake.move("EAST")
                 snake.head.orientation = "EAST"
 

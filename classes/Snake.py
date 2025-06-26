@@ -35,7 +35,6 @@ class Snake:
 
     def move(self, direction: str):
         """Snake movement with proper position and orientation updates."""
-
         dir_map = {
             "NORTH": pygame.Vector2(0, -1),
             "SOUTH": pygame.Vector2(0, 1),
@@ -45,6 +44,8 @@ class Snake:
 
         # Save current positions
         old_positions = [comp.pos.copy() for comp in self.components]
+
+        print(old_positions)
 
         # Update head
         self.components[0].pos += dir_map[direction]
@@ -56,6 +57,7 @@ class Snake:
 
             # Update orientation based on delta with previous segment
             delta = self.components[i - 1].pos - self.components[i].pos
+
             if delta == pygame.Vector2(0, -1):
                 self.components[i].orientation = "NORTH"
             elif delta == pygame.Vector2(0, 1):
@@ -64,10 +66,6 @@ class Snake:
                 self.components[i].orientation = "WEST"
             elif delta == pygame.Vector2(1, 0):
                 self.components[i].orientation = "EAST"
-
-        # Debug print
-        for i, comp in enumerate(self.components):
-            print(f"Segment {i}: pos={comp.pos}, orientation={comp.orientation}")
 
 
 class SnakeComponent:

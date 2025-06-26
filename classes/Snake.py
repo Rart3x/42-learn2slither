@@ -4,7 +4,7 @@ import pygame
 class Snake:
     """Snake class"""
 
-    def __init__(self, initial_pos: pygame.Vector2, orientation:str):
+    def __init__(self, initial_pos: pygame.Vector2, orientation="NORTH"):
         """Snake constructor"""
         self.head = SnakeHead(initial_pos, orientation)
         self.components: list[SnakeComponent] = [
@@ -34,21 +34,40 @@ class Snake:
         return False
 
     def move(self, direction: str):
-        """Snake movements method"""
-        head = self.components[0]
+        """Snake movement with proper position and orientation updates."""
+
         dir_map = {
             "NORTH": pygame.Vector2(0, -1),
             "SOUTH": pygame.Vector2(0, 1),
             "WEST": pygame.Vector2(-1, 0),
             "EAST": pygame.Vector2(1, 0)
         }
-        new_head_pos = head.pos + dir_map[direction]
 
-        self.positions = [new_head_pos] + self.positions[:-1]
+        # Save current positions
+        old_positions = [comp.pos.copy() for comp in self.components]
 
+        # Update head
+        self.components[0].pos += dir_map[direction]
+        self.components[0].orientation = direction
+
+        # Update body segments
+        for i in range(1, len(self.components)):
+            self.components[i].pos = old_positions[i - 1]
+
+            # Update orientation based on delta with previous segment
+            delta = self.components[i - 1].pos - self.components[i].pos
+            if delta == pygame.Vector2(0, -1):
+                self.components[i].orientation = "NORTH"
+            elif delta == pygame.Vector2(0, 1):
+                self.components[i].orientation = "SOUTH"
+            elif delta == pygame.Vector2(-1, 0):
+                self.components[i].orientation = "WEST"
+            elif delta == pygame.Vector2(1, 0):
+                self.components[i].orientation = "EAST"
+
+        # Debug print
         for i, comp in enumerate(self.components):
-            comp.pos = self.positions[i]
-            comp.orientation = direction if i == 0 else comp.orientation
+            print(f"Segment {i}: pos={comp.pos}, orientation={comp.orientation}")
 
 
 class SnakeComponent:

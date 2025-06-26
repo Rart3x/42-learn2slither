@@ -24,7 +24,7 @@ def snake() -> None:
     textures = load_textures(CELL_WIDTH, CELL_HEIGHT)
     gmap, player_pos = create_map()
 
-    snake = Snake(player_pos, "NORTH")
+    snake = Snake(player_pos)
     body, orientations = create_snake_body(gmap, snake.head.pos)
 
     snake.head.orientation = orientations
@@ -41,7 +41,7 @@ def snake() -> None:
                 running = False
 
         key = pygame.key.get_pressed()
-        last_move_time, running = keys(key, snake.head, now, last_move_time, running)
+        last_move_time, running = keys(key, snake, now, last_move_time, running)
 
         screen.fill("white")
 
@@ -50,7 +50,7 @@ def snake() -> None:
             for x in range(GRID_COLS):
                 pos_px = (x * CELL_WIDTH, y * CELL_HEIGHT)
 
-                if x == int(player_pos.x) and y == int(player_pos.y):
+                if x == snake.head.pos.x and y == snake.head.pos.y:
                     if snake.head.orientation == 'NORTH':
                         screen.blit(textures["SNAKE_HEAD_UP"], pos_px)
                     elif snake.head.orientation == 'SOUTH':

@@ -1,6 +1,10 @@
-from imports import *
+import pygame
 
-def keys(key: pygame.key, player_pos: pygame.Vector2, now, last_move_time: int, running: bool, snake_orientation: str) -> tuple[int, bool, str]:
+from imports import *
+from classes.Snake import Snake, SnakeBody, SnakeComponent, SnakeHead
+
+
+def keys(key: pygame.key,  head: SnakeHead, now, last_move_time: int, running: bool) -> tuple[int, bool]:
     """Key handle function"""
     if key[pygame.K_ESCAPE]:
         running = False
@@ -9,28 +13,28 @@ def keys(key: pygame.key, player_pos: pygame.Vector2, now, last_move_time: int, 
 
         # Up movements
         if key[pygame.K_w] or key[pygame.K_UP]:
-            if player_pos.y > 0.0:
-                player_pos.y -= 1
-                snake_orientation = "NORTH"
+            if head.pos.y > 0.0:
+                head.pos.y -= 1
+                head.orientation = "NORTH"
 
         # Down movements
         elif key[pygame.K_s] or key[pygame.K_DOWN]:
-            if player_pos.y < GRID_ROWS - 1:
-                player_pos.y += 1
-                snake_orientation = "SOUTH"
+            if head.pos.y < GRID_ROWS - 1:
+                head.pos.y += 1
+                head.orientation = "SOUTH"
 
         # Left movements
         elif key[pygame.K_a] or key[pygame.K_LEFT]:
-            if player_pos.x > 0.0:
-                player_pos.x -= 1
-                snake_orientation = "WEST"
+            if head.pos.x > 0.0:
+                head.pos.x -= 1
+                head.orientation = "WEST"
 
         # Right movements
         elif key[pygame.K_d] or key[pygame.K_RIGHT]:
-            if player_pos.x < GRID_COLS - 1:
-                player_pos.x += 1
-                snake_orientation = "EAST"
+            if head.pos.x < GRID_COLS - 1:
+                head.pos.x += 1
+                head.orientation = "EAST"
 
         last_move_time = now
 
-    return last_move_time, running, snake_orientation
+    return last_move_time, running

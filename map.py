@@ -1,7 +1,12 @@
+import pygame
+import random as rnd
+
 from imports import *
+from typing import Any
 from utils import *
 
-def create_map() -> tuple[ pygame.Vector2, list[Any], pygame.Vector2, str]:
+
+def create_map() -> tuple[list[Any], pygame.Vector2]:
     """Create a randomize Snake map"""
     gmap = []
 
@@ -23,49 +28,38 @@ def create_map() -> tuple[ pygame.Vector2, list[Any], pygame.Vector2, str]:
 
         gmap.append(row)
 
-    gmap[head_y][head_x] = "H"
     gmap[y2][x2] = "A"
 
-    gmap, snake_orientation = create_snake_body(gmap)
-
-    print_map(gmap)
-
-    return pygame.Vector2(x2, y2), gmap, pygame.Vector2(head_x, head_y), snake_orientation
+    return gmap, pygame.Vector2(head_x, head_y)
 
 
-def create_snake_body(gmap: list) -> tuple[list, str]:
-    """Add snake body on gmap, choosing a valid direction randomly if multiple options are available."""
-    head_y, head_x = find_snake_head(gmap)
+def create_snake_body(gmap: list, pos: pygame.Vector2) -> tuple[list[pygame.Vector2], str]:
+    """Create snake body with valid coordinates and return them along with orientation."""
     height = len(gmap)
     width = len(gmap[0]) if height > 0 else 0
 
     directions = []
 
-    # Check NORTH (body down from head)
-    if head_y + 2 < height and gmap[head_y + 1][head_x] == '0' and gmap[head_y + 2][head_x] == '0':
-        directions.append(("NORTH", [(head_y + 1, head_x), (head_y + 2, head_x)]))
+    x = int(pos.x)
+    y = int(pos.y)
 
-    # Check SOUTH (body up from head)
-    if head_y - 2 >= 0 and gmap[head_y - 1][head_x] == '0' and gmap[head_y - 2][head_x] == '0':
-        directions.append(("SOUTH", [(head_y - 1, head_x), (head_y - 2, head_x)]))
+    # Check NORTH (body extends downward on the map)
+    if y + 2 < height and gmap[y + 1][x] == '0' and gmap[y + 2][x] == '0':
+        directions.append(("NORTH", [pygame.Vector2(x, y + 1), pygame.Vector2(x, y + 2)]))
 
-    # Check WEST (body right from head)
-    if head_x + 2 < width and gmap[head_y][head_x + 1] == '0' and gmap[head_y][head_x + 2] == '0':
-        directions.append(("WEST", [(head_y, head_x + 1), (head_y, head_x + 2)]))
+    # Check SOUTH (body extends upward on the map)
+    if y - 2 >= 0 and gmap[y - 1][x] == '0' and gmap[y - 2][x] == '0':
+        directions.append(("SOUTH", [pygame.Vector2(x, y - 1), pygame.Vector2(x, y - 2)]))
 
-    # Check EAST (body left from head)
-    if head_x - 2 >= 0 and gmap[head_y][head_x - 1] == '0' and gmap[head_y][head_x - 2] == '0':
-        directions.append(("EAST", [(head_y, head_x - 1), (head_y, head_x - 2)]))
+    # Check WEST (body extends to the right on the map)
+    if x + 2 < width and gmap[y][x + 1] == '0' and gmap[y][x + 2] == '0':
+        directions.append(("WEST", [pygame.Vector2(x + 1, y), pygame.Vector2(x + 2, y)]))
 
-    if not directions:
-        # No valid direction to place the body
-        return gmap, ""
+    # Check EAST (body extends to the left on the map)
+    if x - 2 >= 0 and gmap[y][x - 1] == '0' and gmap[y][x - 2] == '0':
+        directions.append(("EAST", [pygame.Vector2(x - 1, y), pygame.Vector2(x - 2, y)]))
 
     # Choose one random valid direction
-    chosen_direction, body_coords = rnd.choice(directions)
+    orientation, body_coords = rnd.choice(directions)
 
-    # Apply body on the map
-    for y, x in body_coords:
-        gmap[y][x] = 'B'
-
-    return gmap, chosen_direction
+    return body_coords, orientation

@@ -135,4 +135,7 @@ def snake() -> None:
 
         clock.tick(60)
 
+        if snake.off:
+            exit()
+
     pygame.quit()

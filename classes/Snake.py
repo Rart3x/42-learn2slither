@@ -13,6 +13,7 @@ class Snake:
         ]
         self.crunch = pygame.mixer.Sound('./assets/sounds/crunch.wav')
         self.positions: list[pygame.Vector2] = [initial_pos]
+        self.off = False
 
     def add_component(self, pos: pygame.Vector2, orientation: str):
         """Add a new component at the end of the snake tail"""
@@ -61,6 +62,11 @@ class Snake:
 
         # Save current positions
         old_positions = [comp.pos.copy() for comp in self.components]
+        new_head_pos = self.components[0].pos + dir_map[direction]
+        body_positions = [comp.pos for comp in self.components[1:]]
+
+        if new_head_pos in body_positions:
+            self.off = True
 
         # Update head
         self.components[0].pos += dir_map[direction]
@@ -81,6 +87,8 @@ class Snake:
                 self.components[i].orientation = "WEST"
             elif delta == pygame.Vector2(1, 0):
                 self.components[i].orientation = "EAST"
+
+
 
     def play_crunch(self):
         """Play crunch sound when snake eat apple"""

@@ -70,11 +70,47 @@ def snake() -> None:
 
                 elif snake.has_component_at(pygame.Vector2(x, y)):
                     comp = snake.get_component_at(pygame.Vector2(x, y))
+                    index = snake.components.index(comp)
 
-                    if comp.orientation in ("NORTH", "SOUTH"):
-                        screen.blit(textures["BODY_VERTICAL"], pos_px)
-                    elif comp.orientation in ("WEST", "EAST"):
-                        screen.blit(textures["BODY_HORIZONTAL"], pos_px)
+                    # Only check for bends if not tail/head
+                    if 0 < index < len(snake.components) - 1:
+                        prev = snake.components[index - 1]
+                        next = snake.components[index + 1]
+
+                        dir_prev = comp.pos - prev.pos
+                        dir_next = comp.pos - next.pos
+
+                        dirs = {
+                            (0, -1): "N",
+                            (0, 1): "S",
+                            (-1, 0): "W",
+                            (1, 0): "E"
+                        }
+
+                        d1 = dirs.get((int(dir_prev.x), int(dir_prev.y)))
+                        d2 = dirs.get((int(dir_next.x), int(dir_next.y)))
+
+                        turn_key = {frozenset(["N", "E"]): "BODY_BOT_LEFT",
+                                    frozenset(["N", "W"]): "BODY_BOT_RIGHT",
+                                    frozenset(["S", "E"]): "BODY_TOP_LEFT",
+                                    frozenset(["S", "W"]): "BODY_TOP_RIGHT"}
+
+                        turn = turn_key.get(frozenset([d1, d2]))
+
+                        if turn:
+                            screen.blit(textures[turn], pos_px)
+                        else:
+                            if comp.orientation in ("NORTH", "SOUTH"):
+                                screen.blit(textures["BODY_VERTICAL"], pos_px)
+                            else:
+                                screen.blit(textures["BODY_HORIZONTAL"], pos_px)
+
+                    else:
+                        # First or last body segment → straight
+                        if comp.orientation in ("NORTH", "SOUTH"):
+                            screen.blit(textures["BODY_VERTICAL"], pos_px)
+                        else:
+                            screen.blit(textures["BODY_HORIZONTAL"], pos_px)
 
                 elif is_there_apple(gmap, pygame.Vector2(x, y)):
                     screen.blit(textures["APPLE"], pos_px)

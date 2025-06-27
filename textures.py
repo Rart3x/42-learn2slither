@@ -27,7 +27,6 @@ def load_textures(cell_width: int, cell_height: int) -> dict[str, pygame.Surface
         "TAIL_HEAD_RIGHT": "assets/snake/tail_right.png",
 
         "APPLE": "assets/components/apple.png",
-        "BAD_APPLE": "assets/components/bad_apple.png",
     }
 
     textures = {}

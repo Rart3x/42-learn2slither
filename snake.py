@@ -71,7 +71,12 @@ def snake() -> None:
                 elif is_there_apple(gmap, pygame.Vector2(x, y)):
                     screen.blit(textures["APPLE"], pos_px)
                 else:
-                    pygame.draw.rect(screen, (255, 255, 255), (pos_px[0], pos_px[1], CELL_WIDTH, CELL_HEIGHT))
+                    if (x + y) % 2 == 0:
+                        color = GREEN_LIGHT
+                    else:
+                        color = GREEN_DARK
+
+                    pygame.draw.rect(screen, color, (pos_px[0], pos_px[1], CELL_WIDTH, CELL_HEIGHT))
 
         pygame.display.flip()
 

@@ -45,6 +45,7 @@ def keys(key: pygame.key, gmap: list, snake: Snake, now, last_move_time: int, ru
                 snake.head.orientation = "EAST"
 
         if is_there_apple(gmap, snake.head.pos):
+            snake.play_crunch()
             snake.grow()
             create_new_apple(snake, gmap)
 

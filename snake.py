@@ -43,10 +43,18 @@ def snake() -> None:
         key = pygame.key.get_pressed()
         last_move_time, running = keys(key, gmap, snake, now, last_move_time, running)
 
-        screen.fill("white")
+        for y in range(GRID_ROWS):
+            for x in range(GRID_COLS):
+                pos_px = (x * CELL_WIDTH, y * CELL_HEIGHT)
+
+                if (x + y) % 2 == 0:
+                    color = GREEN_LIGHT
+                else:
+                    color = GREEN_DARK
+
+                pygame.draw.rect(screen, color, (pos_px[0], pos_px[1], CELL_WIDTH, CELL_HEIGHT))
 
         for y in range(GRID_ROWS):
-
             for x in range(GRID_COLS):
                 pos_px = (x * CELL_WIDTH, y * CELL_HEIGHT)
 
@@ -70,13 +78,6 @@ def snake() -> None:
 
                 elif is_there_apple(gmap, pygame.Vector2(x, y)):
                     screen.blit(textures["APPLE"], pos_px)
-                else:
-                    if (x + y) % 2 == 0:
-                        color = GREEN_LIGHT
-                    else:
-                        color = GREEN_DARK
-
-                    pygame.draw.rect(screen, color, (pos_px[0], pos_px[1], CELL_WIDTH, CELL_HEIGHT))
 
         pygame.display.flip()
 

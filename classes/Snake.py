@@ -7,9 +7,11 @@ class Snake:
     def __init__(self, initial_pos: pygame.Vector2, orientation="NORTH"):
         """Snake constructor"""
         self.head = SnakeHead(initial_pos, orientation)
+
         self.components: list[SnakeComponent] = [
             self.head
         ]
+        self.crunch = pygame.mixer.Sound('./assets/sounds/crunch.wav')
         self.positions: list[pygame.Vector2] = [initial_pos]
 
     def add_component(self, pos: pygame.Vector2, orientation: str):
@@ -80,6 +82,9 @@ class Snake:
             elif delta == pygame.Vector2(1, 0):
                 self.components[i].orientation = "EAST"
 
+    def play_crunch(self):
+        """Play crunch sound when snake eat apple"""
+        self.crunch.play()
 
 class SnakeComponent:
     """SnakeComponent class"""

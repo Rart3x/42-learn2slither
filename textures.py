@@ -32,7 +32,7 @@ def load_textures(cell_width: int, cell_height: int) -> dict[str, pygame.Surface
     textures = {}
 
     for key, path in paths.items():
-        img = pygame.image.load(path)
+        img = pygame.image.load(path).convert_alpha()
         img = pygame.transform.scale(img, (cell_width, cell_height))
         textures[key] = img
 

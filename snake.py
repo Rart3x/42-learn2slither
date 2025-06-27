@@ -72,8 +72,22 @@ def snake() -> None:
                     comp = snake.get_component_at(pygame.Vector2(x, y))
                     index = snake.components.index(comp)
 
-                    # Only check for bends if not tail/head
-                    if 0 < index < len(snake.components) - 1:
+                    # Queue segment (last component)
+                    if index == len(snake.components) - 1 and index != 0:
+                        prev = snake.components[index - 1]
+                        dir_prev = comp.pos - prev.pos
+
+                        if dir_prev == pygame.Vector2(0, -1):
+                            screen.blit(textures["TAIL_HEAD_UP"], pos_px)
+                        elif dir_prev == pygame.Vector2(0, 1):
+                            screen.blit(textures["TAIL_HEAD_DOWN"], pos_px)
+                        elif dir_prev == pygame.Vector2(-1, 0):
+                            screen.blit(textures["TAIL_HEAD_LEFT"], pos_px)
+                        elif dir_prev == pygame.Vector2(1, 0):
+                            screen.blit(textures["TAIL_HEAD_RIGHT"], pos_px)
+
+                    # Body bends (not head or tail)
+                    elif 0 < index < len(snake.components) - 1:
                         prev = snake.components[index - 1]
                         next = snake.components[index + 1]
 
@@ -90,10 +104,12 @@ def snake() -> None:
                         d1 = dirs.get((int(dir_prev.x), int(dir_prev.y)))
                         d2 = dirs.get((int(dir_next.x), int(dir_next.y)))
 
-                        turn_key = {frozenset(["N", "E"]): "BODY_BOT_LEFT",
-                                    frozenset(["N", "W"]): "BODY_BOT_RIGHT",
-                                    frozenset(["S", "E"]): "BODY_TOP_LEFT",
-                                    frozenset(["S", "W"]): "BODY_TOP_RIGHT"}
+                        turn_key = {
+                            frozenset(["N", "E"]): "BODY_BOT_LEFT",
+                            frozenset(["N", "W"]): "BODY_BOT_RIGHT",
+                            frozenset(["S", "E"]): "BODY_TOP_LEFT",
+                            frozenset(["S", "W"]): "BODY_TOP_RIGHT"
+                        }
 
                         turn = turn_key.get(frozenset([d1, d2]))
 
@@ -105,8 +121,8 @@ def snake() -> None:
                             else:
                                 screen.blit(textures["BODY_HORIZONTAL"], pos_px)
 
+                    # Straight body parts (first after head or single segment)
                     else:
-                        # First or last body segment → straight
                         if comp.orientation in ("NORTH", "SOUTH"):
                             screen.blit(textures["BODY_VERTICAL"], pos_px)
                         else:

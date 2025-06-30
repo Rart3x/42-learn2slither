@@ -1,7 +1,5 @@
 import pygame
 
-from imports import *
-
 
 def is_there_apple(gmap: list, pos: pygame.Vector2) -> bool:
     """Return true if map coordinates are an apple"""

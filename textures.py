@@ -1,7 +1,5 @@
 import pygame
 
-from imports import *
-
 
 def load_textures(cell_width: int, cell_height: int) -> dict[str, pygame.Surface]:
     """Load and return a dictionary of textures."""

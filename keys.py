@@ -1,7 +1,4 @@
-import pygame
-
 from classes.Snake import Snake
-from imports import *
 from map import create_new_apple, create_new_malus
 from utils import *
 
@@ -33,6 +30,7 @@ def handle_directional_move(
     General handler for directional movement, interactions, and map updates.
     """
     pos_val = snake.head.pos.y if axis == "y" else snake.head.pos.x
+
     if (axis == "y" and (direction == "NORTH" and pos_val <= 0)) or \
        (axis == "y" and (direction == "SOUTH" and pos_val >= grid_limit - 1)) or \
        (axis == "x" and (direction == "WEST" and pos_val <= 0)) or \

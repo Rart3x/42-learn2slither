@@ -1,10 +1,8 @@
-import pygame
-
-from imports import *
 from keys import keys
 from map import *
 from classes.Snake import Snake
 from textures import *
+from utils import is_there_apple, is_there_malus
 
 
 def snake() -> None:

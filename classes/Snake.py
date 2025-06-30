@@ -120,4 +120,3 @@ class SnakeHead(SnakeComponent):
 class SnakeBody(SnakeComponent):
     """SnakeBody class"""
     pass
-

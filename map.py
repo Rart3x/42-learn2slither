@@ -1,14 +1,13 @@
+import pygame
 import random as rnd
 
 from classes.Snake import Snake
-from imports import *
-from utils import *
-
+from imports import GRID_COLS, GRID_ROWS
 from typing import Any
 
 
 def create_map() -> tuple[list[Any], pygame.Vector2]:
-    """Create a randomize Snake map"""
+    """Create a randomized Snake map."""
     gmap = []
 
     head_x = rnd.randrange(10)
@@ -18,11 +17,9 @@ def create_map() -> tuple[list[Any], pygame.Vector2]:
     while True:
         x2 = rnd.randrange(10)
         y2 = rnd.randrange(10)
-
         if x2 != head_x or y2 != head_y:
             break
 
-    # Create a random apple
     while True:
         x3 = rnd.randrange(10)
         y3 = rnd.randrange(10)
@@ -33,18 +30,16 @@ def create_map() -> tuple[list[Any], pygame.Vector2]:
         x4 = rnd.randrange(10)
         y4 = rnd.randrange(10)
         if (
-                (x4, y4) != (head_x, head_y)
-                and (x4, y4) != (x2, y2)
-                and (x4, y4) != (x3, y3)
+            (x4, y4) != (head_x, head_y)
+            and (x4, y4) != (x2, y2)
+            and (x4, y4) != (x3, y3)
         ):
             break
 
     for y in range(GRID_ROWS):
         row = []
-
         for x in range(GRID_COLS):
             row.append("0")
-
         gmap.append(row)
 
     gmap[y2][x2] = "A"
@@ -55,9 +50,10 @@ def create_map() -> tuple[list[Any], pygame.Vector2]:
 
 
 def create_new_apple(snake: Snake, gmap: list):
-    """Delete the old apple and create a new apple at random coordinates not occupied by the snake."""
-
-    # Remove old apple (if you stored it at the head position by mistake, this line fixes it)
+    """
+    Create a new apple at a random position not occupied by the snake.
+    Removes the one possibly created under the head.
+    """
     gmap[int(snake.head.pos.y)][int(snake.head.pos.x)] = "0"
 
     height = len(gmap)
@@ -69,14 +65,15 @@ def create_new_apple(snake: Snake, gmap: list):
         pos = pygame.Vector2(x, y)
 
         if gmap[y][x] == "0" and not snake.has_component_at(pos):
-            gmap[y][x] = "A"  # "A" for Apple
+            gmap[y][x] = "A"
             break
 
 
 def create_new_malus(snake: Snake, gmap: list):
-    """Delete the old malus and create a new malus at random coordinates not occupied by the snake."""
-
-    # Remove old malus (if you stored it at the head position by mistake, this line fixes it)
+    """
+    Create a new malus at a random position not occupied by the snake.
+    Removes the one possibly created under the head.
+    """
     gmap[int(snake.head.pos.y)][int(snake.head.pos.x)] = "0"
 
     height = len(gmap)
@@ -88,12 +85,18 @@ def create_new_malus(snake: Snake, gmap: list):
         pos = pygame.Vector2(x, y)
 
         if gmap[y][x] == "0" and not snake.has_component_at(pos):
-            gmap[y][x] = "M"  # "M" for Malus
+            gmap[y][x] = "M"
             break
 
 
-def create_snake_body(gmap: list, pos: pygame.Vector2) -> tuple[list[pygame.Vector2], str]:
-    """Create snake body with valid coordinates and return them along with orientation."""
+def create_snake_body(
+    gmap: list,
+    pos: pygame.Vector2
+) -> tuple[list[pygame.Vector2], str]:
+    """
+    Create a snake body with valid coordinates
+    and return them with orientation.
+    """
     height = len(gmap)
     width = len(gmap[0]) if height > 0 else 0
 
@@ -103,22 +106,48 @@ def create_snake_body(gmap: list, pos: pygame.Vector2) -> tuple[list[pygame.Vect
     y = int(pos.y)
 
     # Check NORTH (body extends downward on the map)
-    if y + 2 < height and gmap[y + 1][x] == '0' and gmap[y + 2][x] == '0':
-        directions.append(("NORTH", [pygame.Vector2(x, y + 1), pygame.Vector2(x, y + 2)]))
+    if (
+        y + 2 < height
+        and gmap[y + 1][x] == '0'
+        and gmap[y + 2][x] == '0'
+    ):
+        directions.append((
+            "NORTH",
+            [pygame.Vector2(x, y + 1), pygame.Vector2(x, y + 2)]
+        ))
 
     # Check SOUTH (body extends upward on the map)
-    if y - 2 >= 0 and gmap[y - 1][x] == '0' and gmap[y - 2][x] == '0':
-        directions.append(("SOUTH", [pygame.Vector2(x, y - 1), pygame.Vector2(x, y - 2)]))
+    if (
+        y - 2 >= 0
+        and gmap[y - 1][x] == '0'
+        and gmap[y - 2][x] == '0'
+    ):
+        directions.append((
+            "SOUTH",
+            [pygame.Vector2(x, y - 1), pygame.Vector2(x, y - 2)]
+        ))
 
     # Check WEST (body extends to the right on the map)
-    if x + 2 < width and gmap[y][x + 1] == '0' and gmap[y][x + 2] == '0':
-        directions.append(("WEST", [pygame.Vector2(x + 1, y), pygame.Vector2(x + 2, y)]))
+    if (
+        x + 2 < width
+        and gmap[y][x + 1] == '0'
+        and gmap[y][x + 2] == '0'
+    ):
+        directions.append((
+            "WEST",
+            [pygame.Vector2(x + 1, y), pygame.Vector2(x + 2, y)]
+        ))
 
     # Check EAST (body extends to the left on the map)
-    if x - 2 >= 0 and gmap[y][x - 1] == '0' and gmap[y][x - 2] == '0':
-        directions.append(("EAST", [pygame.Vector2(x - 1, y), pygame.Vector2(x - 2, y)]))
+    if (
+        x - 2 >= 0
+        and gmap[y][x - 1] == '0'
+        and gmap[y][x - 2] == '0'
+    ):
+        directions.append((
+            "EAST",
+            [pygame.Vector2(x - 1, y), pygame.Vector2(x - 2, y)]
+        ))
 
-    # Choose one random valid direction
     orientation, body_coords = rnd.choice(directions)
-
     return body_coords, orientation

@@ -8,11 +8,7 @@ from textures import load_textures
 from utils import is_there_apple, is_there_malus
 
 
-def snake() -> None:
-    """Main Snake game loop."""
-    pygame.init()
-    pygame.display.set_caption("🐍 Learn2Slither 🐍")
-    screen = pygame.display.set_mode((750, 750))
+def snake(screen) -> bool:
     clock = pygame.time.Clock()
     running = True
 
@@ -36,23 +32,19 @@ def snake() -> None:
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                return False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                return True
 
         key = pygame.key.get_pressed()
-        last_move_time, running = keys(
-            key, gmap, snake, now, last_move_time, running
-        )
+        last_move_time, running = keys(key, gmap, snake, now, last_move_time, running)
 
         # Draw background
         for y in range(GRID_ROWS):
             for x in range(GRID_COLS):
                 pos_px = (x * cell_width, y * cell_height)
                 color = GREEN_LIGHT if (x + y) % 2 == 0 else GREEN_DARK
-                pygame.draw.rect(
-                    screen,
-                    color,
-                    (pos_px[0], pos_px[1], cell_width, cell_height)
-                )
+                pygame.draw.rect(screen, color, (pos_px[0], pos_px[1], cell_width, cell_height))
 
         # Draw elements
         for y in range(GRID_ROWS):
@@ -60,7 +52,6 @@ def snake() -> None:
                 pos_px = (x * cell_width, y * cell_height)
                 pos_vec = pygame.Vector2(x, y)
 
-                # Head
                 if x == snake.head.pos.x and y == snake.head.pos.y:
                     head_tex = {
                         'NORTH': "SNAKE_HEAD_UP",
@@ -68,30 +59,26 @@ def snake() -> None:
                         'WEST': "SNAKE_HEAD_LEFT",
                         'EAST': "SNAKE_HEAD_RIGHT"
                     }.get(snake.head.orientation)
+
                     if head_tex:
                         screen.blit(textures[head_tex], pos_px)
 
-                # Body
                 elif snake.has_component_at(pos_vec):
                     comp = snake.get_component_at(pos_vec)
                     index = snake.components.index(comp)
 
-                    # Tail
                     if index == len(snake.components) - 1 and index != 0:
                         prev = snake.components[index - 1]
                         dir_prev = comp.pos - prev.pos
                         tail_map = {
-                            pygame.Vector2(0, -1): "TAIL_HEAD_UP",
-                            pygame.Vector2(0, 1): "TAIL_HEAD_DOWN",
-                            pygame.Vector2(-1, 0): "TAIL_HEAD_LEFT",
-                            pygame.Vector2(1, 0): "TAIL_HEAD_RIGHT"
+                            (0, -1): "TAIL_HEAD_UP",
+                            (0, 1): "TAIL_HEAD_DOWN",
+                            (-1, 0): "TAIL_HEAD_LEFT",
+                            (1, 0): "TAIL_HEAD_RIGHT"
                         }
-                        screen.blit(
-                            textures[tail_map.get(dir_prev, "")],
-                            pos_px
-                        )
+                        key = (int(dir_prev.x), int(dir_prev.y))
+                        screen.blit(textures.get(tail_map.get(key, ""), None), pos_px)
 
-                    # Bends
                     elif 0 < index < len(snake.components) - 1:
                         prev = snake.components[index - 1]
                         next = snake.components[index + 1]
@@ -114,26 +101,17 @@ def snake() -> None:
                         }
 
                         turn = turn_key.get(frozenset([d1, d2]))
+
                         if turn:
                             screen.blit(textures[turn], pos_px)
                         else:
-                            tex = (
-                                "BODY_VERTICAL"
-                                if comp.orientation in ("NORTH", "SOUTH")
-                                else "BODY_HORIZONTAL"
-                            )
+                            tex = "BODY_VERTICAL" if comp.orientation in ("NORTH", "SOUTH") else "BODY_HORIZONTAL"
                             screen.blit(textures[tex], pos_px)
 
-                    # Straight body (first after head or only 1 segment)
                     else:
-                        tex = (
-                            "BODY_VERTICAL"
-                            if comp.orientation in ("NORTH", "SOUTH")
-                            else "BODY_HORIZONTAL"
-                        )
+                        tex = "BODY_VERTICAL" if comp.orientation in ("NORTH", "SOUTH") else "BODY_HORIZONTAL"
                         screen.blit(textures[tex], pos_px)
 
-                # Apple & Malus
                 elif is_there_apple(gmap, pos_vec):
                     screen.blit(textures["APPLE"], pos_px)
                 elif is_there_malus(gmap, pos_vec):
@@ -143,6 +121,6 @@ def snake() -> None:
         clock.tick(60)
 
         if snake.off:
-            exit()
+            return True  # Return to menu
 
-    pygame.quit()
+    return True

@@ -99,8 +99,9 @@ class Snake:
         if len(self.components) > 1:
             self.components.pop()
             self.positions.pop()
+            return True
         else:
-            exit()
+            return False
 
 
 class SnakeComponent:

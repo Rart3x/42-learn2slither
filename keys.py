@@ -42,6 +42,7 @@ def handle_directional_move(
         or (axis == "x" and direction == "EAST"
             and pos_val >= grid_limit - 1)
     ):
+        pygame.quit()
         exit()
 
     if can_change_direction(snake.head.orientation, direction):

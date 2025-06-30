@@ -130,6 +130,8 @@ def snake() -> None:
 
                 elif is_there_apple(gmap, pygame.Vector2(x, y)):
                     screen.blit(textures["APPLE"], pos_px)
+                elif is_there_malus(gmap, pygame.Vector2(x, y)):
+                    screen.blit(textures["MALUS"], pos_px)
 
         pygame.display.flip()
 

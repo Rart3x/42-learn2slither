@@ -33,7 +33,7 @@ class Snake:
         """Add a new segment at the tail based on the tail's orientation."""
         tail = self.components[-1]
         tail_dir_map = {
-            "NORTH": pygame.Vector2(0, 1),  # opposite of NORTH is SOUTH
+            "NORTH": pygame.Vector2(0, 1),
             "SOUTH": pygame.Vector2(0, -1),
             "WEST": pygame.Vector2(1, 0),
             "EAST": pygame.Vector2(-1, 0)
@@ -88,11 +88,18 @@ class Snake:
             elif delta == pygame.Vector2(1, 0):
                 self.components[i].orientation = "EAST"
 
-
-
     def play_crunch(self):
         """Play crunch sound when snake eat apple"""
         self.crunch.play()
+
+    def shrink(self):
+        """Remove the last segment of the snake (the tail) if length > 1."""
+        if len(self.components) > 2:
+            self.components.pop()
+            self.positions.pop()
+        else:
+            exit()
+
 
 class SnakeComponent:
     """SnakeComponent class"""

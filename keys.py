@@ -2,7 +2,7 @@ import pygame
 
 from classes.Snake import Snake, SnakeBody, SnakeComponent, SnakeHead
 from imports import *
-from map import create_new_apple
+from map import create_new_apple, create_new_malus
 from utils import *
 
 def keys(key: pygame.key, gmap: list, snake: Snake, now, last_move_time: int, running: bool) -> tuple[int, bool]:
@@ -48,6 +48,11 @@ def keys(key: pygame.key, gmap: list, snake: Snake, now, last_move_time: int, ru
             snake.play_crunch()
             snake.grow()
             create_new_apple(snake, gmap)
+
+        if is_there_malus(gmap, snake.head.pos):
+            snake.play_crunch()
+            snake.shrink()
+            create_new_malus(snake, gmap)
 
         last_move_time = now
 

@@ -14,11 +14,29 @@ def create_map() -> tuple[list[Any], pygame.Vector2]:
     head_x = rnd.randrange(10)
     head_y = rnd.randrange(10)
 
+    # Create a random apple
     while True:
         x2 = rnd.randrange(10)
         y2 = rnd.randrange(10)
 
         if x2 != head_x or y2 != head_y:
+            break
+
+    # Create a random apple
+    while True:
+        x3 = rnd.randrange(10)
+        y3 = rnd.randrange(10)
+        if (x3, y3) != (head_x, head_y) and (x3, y3) != (x2, y2):
+            break
+
+    while True:
+        x4 = rnd.randrange(10)
+        y4 = rnd.randrange(10)
+        if (
+                (x4, y4) != (head_x, head_y)
+                and (x4, y4) != (x2, y2)
+                and (x4, y4) != (x3, y3)
+        ):
             break
 
     for y in range(GRID_ROWS):
@@ -30,6 +48,8 @@ def create_map() -> tuple[list[Any], pygame.Vector2]:
         gmap.append(row)
 
     gmap[y2][x2] = "A"
+    gmap[y3][x3] = "A"
+    gmap[y4][x4] = "M"
 
     return gmap, pygame.Vector2(head_x, head_y)
 
@@ -50,6 +70,25 @@ def create_new_apple(snake: Snake, gmap: list):
 
         if gmap[y][x] == "0" and not snake.has_component_at(pos):
             gmap[y][x] = "A"  # "A" for Apple
+            break
+
+
+def create_new_malus(snake: Snake, gmap: list):
+    """Delete the old malus and create a new malus at random coordinates not occupied by the snake."""
+
+    # Remove old malus (if you stored it at the head position by mistake, this line fixes it)
+    gmap[int(snake.head.pos.y)][int(snake.head.pos.x)] = "0"
+
+    height = len(gmap)
+    width = len(gmap[0]) if height > 0 else 0
+
+    while True:
+        x = rnd.randint(0, width - 1)
+        y = rnd.randint(0, height - 1)
+        pos = pygame.Vector2(x, y)
+
+        if gmap[y][x] == "0" and not snake.has_component_at(pos):
+            gmap[y][x] = "M"  # "M" for Malus
             break
 
 

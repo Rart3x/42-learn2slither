@@ -1,3 +1,4 @@
+from imports import *
 from keys import keys
 from map import *
 from classes.Snake import Snake

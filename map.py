@@ -1,10 +1,10 @@
 import random as rnd
 
 from classes.Snake import Snake
+from imports import *
 from utils import *
 
 from typing import Any
-
 
 
 def create_map() -> tuple[list[Any], pygame.Vector2]:

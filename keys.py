@@ -1,4 +1,5 @@
 from classes.Snake import Snake
+from imports import *
 from map import create_new_apple, create_new_malus
 from utils import *
 

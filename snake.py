@@ -110,13 +110,13 @@ def snake(screen) -> bool:
                             screen.blit(textures[turn], pos_px)
                         else:
                             tex = "BODY_VERTICAL" \
-                                if comp.orientation in ("NORTH", "SOUTH")\
+                                if comp.orientation in ("NORTH", "SOUTH") \
                                 else "BODY_HORIZONTAL"
                             screen.blit(textures[tex], pos_px)
 
                     else:
-                        tex = "BODY_VERTICAL"\
-                            if comp.orientation in ("NORTH", "SOUTH")\
+                        tex = "BODY_VERTICAL" \
+                            if comp.orientation in ("NORTH", "SOUTH") \
                             else "BODY_HORIZONTAL"
                         screen.blit(textures[tex], pos_px)
 

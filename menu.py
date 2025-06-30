@@ -16,12 +16,16 @@ class Button:
         self.rect = pygame.Rect(pos, size)
         self.callback = callback
         self.hovered = False
+        self.focused = False  # Focus state for keyboard navigation
 
     def draw(self, surface):
         """
         Draw the button on the given surface.
         """
-        color = (100, 100, 100) if self.hovered else (200, 200, 200)
+        if self.focused:
+            color = (100, 150, 255)  # Light blue when focused
+        else:
+            color = (100, 100, 100) if self.hovered else (200, 200, 200)
         pygame.draw.rect(surface, color, self.rect, border_radius=10)
         pygame.draw.rect(surface, (0, 0, 0), self.rect, 2, border_radius=10)
 
@@ -66,6 +70,9 @@ def menu(screen) -> None:
         Button("Quit", (750 // 2 - 100, 340), (200, 60), quit_game),
     ]
 
+    focused_button = 0  # Index of focused button
+    buttons[focused_button].focused = True
+
     while running:
         if not in_game:
             screen.fill(BLUE)
@@ -80,8 +87,33 @@ def menu(screen) -> None:
                 if event.type == pygame.QUIT:
                     quit_game()
 
-            for button in buttons:
-                button.update(mouse_pos, mouse_pressed)
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        quit_game()
+
+                    if event.key in (pygame.K_UP, pygame.K_w):
+                        # Move focus up
+                        buttons[focused_button].focused = False
+                        focused_button = (focused_button - 1) % len(buttons)
+                        buttons[focused_button].focused = True
+
+                    elif event.key in (pygame.K_DOWN, pygame.K_s):
+                        # Move focus down
+                        buttons[focused_button].focused = False
+                        focused_button = (focused_button + 1) % len(buttons)
+                        buttons[focused_button].focused = True
+
+                    elif event.key in (pygame.K_RETURN, pygame.K_SPACE):
+                        # Activate focused button
+                        buttons[focused_button].callback()
+
+            # Update buttons: hover with mouse, but only if mouse not moved away from focused
+            for i, button in enumerate(buttons):
+                if i != focused_button:
+                    button.update(mouse_pos, mouse_pressed)
+                else:
+                    button.hovered = False  # Prevent hover override on focused button
+
                 button.draw(screen)
 
             pygame.display.flip()

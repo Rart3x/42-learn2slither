@@ -12,7 +12,7 @@ def snake() -> None:
     pygame.init()
     pygame.display.set_caption("🐍 Learn2Slither 🐍")
 
-    screen = pygame.display.set_mode((1280, 720))
+    screen = pygame.display.set_mode((750, 750))
 
     clock = pygame.time.Clock()
 

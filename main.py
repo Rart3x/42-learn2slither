@@ -1,6 +1,6 @@
 import os
 
-from snake import *
+from snake import snake
 
 
 def main():

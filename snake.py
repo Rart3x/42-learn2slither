@@ -37,14 +37,17 @@ def snake(screen) -> bool:
                 return True
 
         key = pygame.key.get_pressed()
-        last_move_time, running = keys(key, gmap, snake, now, last_move_time, running)
+        last_move_time, running = keys(key, gmap,
+                                       snake, now, last_move_time, running)
 
         # Draw background
         for y in range(GRID_ROWS):
             for x in range(GRID_COLS):
                 pos_px = (x * cell_width, y * cell_height)
                 color = GREEN_LIGHT if (x + y) % 2 == 0 else GREEN_DARK
-                pygame.draw.rect(screen, color, (pos_px[0], pos_px[1], cell_width, cell_height))
+                pygame.draw.rect(screen, color,
+                                 (pos_px[0], pos_px[1],
+                                  cell_width, cell_height))
 
         # Draw elements
         for y in range(GRID_ROWS):
@@ -77,7 +80,8 @@ def snake(screen) -> bool:
                             (1, 0): "TAIL_HEAD_RIGHT"
                         }
                         key = (int(dir_prev.x), int(dir_prev.y))
-                        screen.blit(textures.get(tail_map.get(key, ""), None), pos_px)
+                        screen.blit(textures.get(tail_map.get(key, ""),
+                                                 None), pos_px)
 
                     elif 0 < index < len(snake.components) - 1:
                         prev = snake.components[index - 1]
@@ -105,11 +109,15 @@ def snake(screen) -> bool:
                         if turn:
                             screen.blit(textures[turn], pos_px)
                         else:
-                            tex = "BODY_VERTICAL" if comp.orientation in ("NORTH", "SOUTH") else "BODY_HORIZONTAL"
+                            tex = "BODY_VERTICAL" \
+                                if comp.orientation in ("NORTH", "SOUTH")\
+                                else "BODY_HORIZONTAL"
                             screen.blit(textures[tex], pos_px)
 
                     else:
-                        tex = "BODY_VERTICAL" if comp.orientation in ("NORTH", "SOUTH") else "BODY_HORIZONTAL"
+                        tex = "BODY_VERTICAL"\
+                            if comp.orientation in ("NORTH", "SOUTH")\
+                            else "BODY_HORIZONTAL"
                         screen.blit(textures[tex], pos_px)
 
                 elif is_there_apple(gmap, pos_vec):

@@ -63,13 +63,15 @@ class Snake:
         # Save current positions
         old_positions = [comp.pos.copy() for comp in self.components]
         new_head_pos = self.components[0].pos + dir_map[direction]
-        body_positions = [comp.pos for comp in self.components[1:]]
+
+        # Ignore last segment when checking collision (tail moves away)
+        body_positions = [comp.pos for comp in self.components[1:-1]]
 
         if new_head_pos in body_positions:
             self.off = True
 
         # Update head
-        self.components[0].pos += dir_map[direction]
+        self.components[0].pos = new_head_pos
         self.components[0].orientation = direction
 
         # Update body segments

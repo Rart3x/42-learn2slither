@@ -25,6 +25,17 @@ def menu(screen) -> None:
         pygame.quit()
         exit()
 
+    def reset_simulation():
+        """Initialize map and snake for menu simulation."""
+        nonlocal gmap, snake_obj, last_move_time
+        gmap, player_pos = create_map()
+        snake_obj = Snake(player_pos)
+        body, orientations = create_snake_body(gmap, snake_obj.head.pos)
+        snake_obj.head.orientation = orientations
+        snake_obj.add_component(body[0], orientations)
+        snake_obj.add_component(body[1], orientations)
+        last_move_time = pygame.time.get_ticks()
+
     title = pygame.font.SysFont("Arial", 64)
 
     clock = pygame.time.Clock()
@@ -198,3 +209,4 @@ def menu(screen) -> None:
                 running = False
             else:
                 in_game = False
+                reset_simulation()

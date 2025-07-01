@@ -55,8 +55,9 @@ def menu(screen) -> None:
 
     last_move_time = pygame.time.get_ticks()
 
-    running = True
     in_game = False
+    running = True
+    simulation = True
 
     buttons = [
         Button("Play", (screen.get_height() // 2 - 100, 250), (200, 60), start_game),
@@ -187,7 +188,11 @@ def menu(screen) -> None:
                         buttons[focused_button].callback()
 
             key = pygame.key.get_pressed()
-            last_move_time, running = keys(key, gmap, snake_obj, now, last_move_time, running)
+            last_move_time, simulation = keys(key, gmap, snake_obj, now, last_move_time, simulation)
+
+            if not simulation:
+                reset_simulation()
+                simulation = True
 
             # Update buttons: hover with mouse, but only if mouse not moved away from focused
             for i, button in enumerate(buttons):

@@ -8,14 +8,13 @@ from textures import load_textures
 from utils import is_there_apple, is_there_malus
 
 
-def snake(screen) -> bool:
+def snake(screen, textures) -> bool:
     clock = pygame.time.Clock()
     running = True
 
     cell_width = screen.get_width() // GRID_COLS
     cell_height = screen.get_height() // GRID_ROWS
 
-    textures = load_textures(cell_width, cell_height)
     gmap, player_pos = create_map()
 
     snake = Snake(player_pos)

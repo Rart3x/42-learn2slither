@@ -1,46 +1,10 @@
 import pygame
 
+from classes.Button import Button
 from imports import BLUE, WHITE, GRID_COLS, GRID_ROWS, GREEN_LIGHT, GREEN_DARK
+from map import create_map
 from snake import snake
-
-
-class Button:
-    """
-    Button UI element with hover and click functionality.
-    """
-    def __init__(self, text, pos, size, callback):
-        """
-        Initialize a button.
-        """
-        self.text = text
-        self.rect = pygame.Rect(pos, size)
-        self.callback = callback
-        self.hovered = False
-        self.focused = False  # Focus state for keyboard navigation
-
-    def draw(self, surface):
-        """
-        Draw the button on the given surface.
-        """
-        if self.focused:
-            color = (100, 150, 255)  # Light blue when focused
-        else:
-            color = (100, 100, 100) if self.hovered else (200, 200, 200)
-        pygame.draw.rect(surface, color, self.rect, border_radius=10)
-        pygame.draw.rect(surface, (0, 0, 0), self.rect, 2, border_radius=10)
-
-        text_surf = (pygame.font.SysFont("Arial", 32)
-                     .render(self.text, True, (0, 0, 0)))
-        text_rect = text_surf.get_rect(center=self.rect.center)
-        surface.blit(text_surf, text_rect)
-
-    def update(self, mouse_pos, mouse_pressed):
-        """
-        Update button hover state and trigger callback on click.
-        """
-        self.hovered = self.rect.collidepoint(mouse_pos)
-        if self.hovered and mouse_pressed[0]:
-            self.callback()
+from textures import load_textures
 
 
 def menu(screen) -> None:
@@ -54,6 +18,10 @@ def menu(screen) -> None:
 
     cell_width = screen.get_width() // GRID_COLS
     cell_height = screen.get_height() // GRID_ROWS
+
+    textures = load_textures(cell_width, cell_height)
+    gmap, player_pos = create_map()
+
 
     running = True
     in_game = False
@@ -69,8 +37,8 @@ def menu(screen) -> None:
         exit()
 
     buttons = [
-        Button("Play", (750 // 2 - 100, 250), (200, 60), start_game),
-        Button("Quit", (750 // 2 - 100, 340), (200, 60), quit_game),
+        Button("Play", (screen.get_height() // 2 - 100, 250), (200, 60), start_game),
+        Button("Quit", (screen.get_height() // 2 - 100, 340), (200, 60), quit_game),
     ]
 
     focused_button = 0  # Index of focused button
@@ -85,7 +53,6 @@ def menu(screen) -> None:
 
             mouse_pos = pygame.mouse.get_pos()
             mouse_pressed = pygame.mouse.get_pressed()
-
 
             # Draw grid background
             for y in range(GRID_ROWS):
@@ -133,7 +100,7 @@ def menu(screen) -> None:
             clock.tick(60)
 
         else:
-            back_to_menu = snake(screen)
+            back_to_menu = snake(screen, textures)
 
             if not back_to_menu:
                 running = False

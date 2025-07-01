@@ -8,3 +8,8 @@ GRID_COLS = 10
 GRID_ROWS = 10
 
 MOVE_DELAY = 75
+
+HEIGHT = 750
+WIDTH = 750
+
+TITLE = "🐍 Learn2Slither 🐍"

@@ -27,7 +27,8 @@ def handle_directional_move(
     grid_limit: int,
     axis: str,
     create_apple_func,
-    create_malus_func
+    create_malus_func,
+    running: bool
 ):
     """
     General handler for directional movement, interactions, and map updates.
@@ -42,12 +43,14 @@ def handle_directional_move(
         or (axis == "x" and direction == "EAST"
             and pos_val >= grid_limit - 1)
     ):
-        pygame.quit()
-        exit()
+        return False
 
     if can_change_direction(snake.head.orientation, direction):
         next_pos = snake.head.pos + move_vec
-        ate_apple, ate_malus = handle_next_tile(gmap, snake, next_pos)
+        ate_apple, ate_malus, running = handle_next_tile(gmap, snake, next_pos, running)
+
+        if not running:
+            return False
 
         snake.move(direction)
         snake.head.orientation = direction
@@ -57,12 +60,15 @@ def handle_directional_move(
         if ate_malus:
             create_malus_func(snake, gmap)
 
+    return True
+
 
 def handle_next_tile(
     gmap: list,
     snake: Snake,
-    next_pos: pygame.Vector2
-) -> tuple[bool, bool]:
+    next_pos: pygame.Vector2,
+    running: bool
+) -> tuple[bool, bool, bool]:
     """
     Check what's on the next tile and handle snake reaction (grow/shrink).
     Returns a tuple: (ate_apple, ate_malus)
@@ -77,10 +83,10 @@ def handle_next_tile(
 
     if is_there_malus(gmap, next_pos):
         snake.play_crunch()
-        snake.shrink()
+        running = snake.shrink()
         ate_malus = True
 
-    return ate_apple, ate_malus
+    return ate_apple, ate_malus, running
 
 
 def keys(
@@ -99,24 +105,24 @@ def keys(
 
     if now - last_move_time > MOVE_DELAY:
         if key[pygame.K_w]:
-            handle_directional_move(
+            running = handle_directional_move(
                 snake, gmap, "NORTH", pygame.Vector2(0, -1),
-                GRID_ROWS, "y", create_new_apple, create_new_malus
+                GRID_ROWS, "y", create_new_apple, create_new_malus, running
             )
         elif key[pygame.K_s]:
-            handle_directional_move(
+            running = handle_directional_move(
                 snake, gmap, "SOUTH", pygame.Vector2(0, 1),
-                GRID_ROWS, "y", create_new_apple, create_new_malus
+                GRID_ROWS, "y", create_new_apple, create_new_malus, running
             )
         elif key[pygame.K_a]:
-            handle_directional_move(
+            running = handle_directional_move(
                 snake, gmap, "WEST", pygame.Vector2(-1, 0),
-                GRID_COLS, "x", create_new_apple, create_new_malus
+                GRID_COLS, "x", create_new_apple, create_new_malus, running
             )
         elif key[pygame.K_d]:
-            handle_directional_move(
+            running = handle_directional_move(
                 snake, gmap, "EAST", pygame.Vector2(1, 0),
-                GRID_COLS, "x", create_new_apple, create_new_malus
+                GRID_COLS, "x", create_new_apple, create_new_malus, running
             )
 
         last_move_time = now

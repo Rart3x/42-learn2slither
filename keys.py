@@ -52,7 +52,9 @@ def handle_directional_move(
         if not running:
             return False
 
-        snake.move(direction)
+        if not snake.move(direction):
+            return False
+        
         snake.head.orientation = direction
 
         if ate_apple:

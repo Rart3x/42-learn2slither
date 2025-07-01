@@ -96,7 +96,7 @@ class Snake:
 
     def shrink(self):
         """Remove the last segment of the snake (the tail) if length > 1."""
-        if len(self.components) > 1:
+        if len(self.components) - 1 > 1:
             self.components.pop()
             self.positions.pop()
             return True

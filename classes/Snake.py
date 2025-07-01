@@ -69,6 +69,7 @@ class Snake:
 
         if new_head_pos in body_positions:
             self.off = True
+            return False
 
         # Update head
         self.components[0].pos = new_head_pos
@@ -89,6 +90,8 @@ class Snake:
                 self.components[i].orientation = "WEST"
             elif delta == pygame.Vector2(1, 0):
                 self.components[i].orientation = "EAST"
+        
+        return True
 
     def play_crunch(self):
         """Play crunch sound when snake eat apple"""

@@ -1,6 +1,6 @@
 import pygame
 
-from imports import BLUE, WHITE
+from imports import BLUE, WHITE, GRID_COLS, GRID_ROWS, GREEN_LIGHT, GREEN_DARK
 from snake import snake
 
 
@@ -52,6 +52,9 @@ def menu(screen) -> None:
 
     clock = pygame.time.Clock()
 
+    cell_width = screen.get_width() // GRID_COLS
+    cell_height = screen.get_height() // GRID_ROWS
+
     running = True
     in_game = False
 
@@ -82,6 +85,16 @@ def menu(screen) -> None:
 
             mouse_pos = pygame.mouse.get_pos()
             mouse_pressed = pygame.mouse.get_pressed()
+
+
+            # Draw grid background
+            for y in range(GRID_ROWS):
+                for x in range(GRID_COLS):
+                    pos_px = (x * cell_width, y * cell_height)
+                    color = GREEN_LIGHT if (x + y) % 2 == 0 else GREEN_DARK
+                    pygame.draw.rect(screen, color,
+                                    (pos_px[0], pos_px[1],
+                                    cell_width, cell_height))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

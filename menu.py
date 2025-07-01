@@ -188,6 +188,7 @@ def menu(screen) -> None:
                 button.draw(screen)
 
             pygame.display.flip()
+            
             clock.tick(60)
 
         else:

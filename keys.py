@@ -98,22 +98,22 @@ def keys(
         running = False
 
     if now - last_move_time > MOVE_DELAY:
-        if key[pygame.K_w] or key[pygame.K_UP]:
+        if key[pygame.K_w]:
             handle_directional_move(
                 snake, gmap, "NORTH", pygame.Vector2(0, -1),
                 GRID_ROWS, "y", create_new_apple, create_new_malus
             )
-        elif key[pygame.K_s] or key[pygame.K_DOWN]:
+        elif key[pygame.K_s]:
             handle_directional_move(
                 snake, gmap, "SOUTH", pygame.Vector2(0, 1),
                 GRID_ROWS, "y", create_new_apple, create_new_malus
             )
-        elif key[pygame.K_a] or key[pygame.K_LEFT]:
+        elif key[pygame.K_a]:
             handle_directional_move(
                 snake, gmap, "WEST", pygame.Vector2(-1, 0),
                 GRID_COLS, "x", create_new_apple, create_new_malus
             )
-        elif key[pygame.K_d] or key[pygame.K_RIGHT]:
+        elif key[pygame.K_d]:
             handle_directional_move(
                 snake, gmap, "EAST", pygame.Vector2(1, 0),
                 GRID_COLS, "x", create_new_apple, create_new_malus

@@ -52,7 +52,7 @@ def handle_directional_move(
         if not running:
             return False
 
-        if not snake.move(direction):
+        if not snake.move(direction, gmap):
             return False
         
         snake.head.orientation = direction
@@ -117,11 +117,13 @@ def keys(
                 snake, gmap, "SOUTH", pygame.Vector2(0, 1),
                 GRID_ROWS, "y", create_new_apple, create_new_malus, running
             )
+
         elif key[pygame.K_a]:
             running = handle_directional_move(
                 snake, gmap, "WEST", pygame.Vector2(-1, 0),
                 GRID_COLS, "x", create_new_apple, create_new_malus, running
             )
+
         elif key[pygame.K_d]:
             running = handle_directional_move(
                 snake, gmap, "EAST", pygame.Vector2(1, 0),

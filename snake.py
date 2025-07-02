@@ -25,6 +25,7 @@ def snake(screen, textures) -> bool:
     snake.add_component(body[1], orientations)
 
     snake.view(gmap)
+    snake.print_view()
 
     last_move_time = pygame.time.get_ticks()
 
@@ -74,12 +75,14 @@ def snake(screen, textures) -> bool:
                     if index == len(snake.components) - 1 and index != 0:
                         prev = snake.components[index - 1]
                         dir_prev = comp.pos - prev.pos
+                        
                         tail_map = {
                             (0, -1): "TAIL_HEAD_UP",
                             (0, 1): "TAIL_HEAD_DOWN",
                             (-1, 0): "TAIL_HEAD_LEFT",
                             (1, 0): "TAIL_HEAD_RIGHT"
                         }
+                        
                         key = (int(dir_prev.x), int(dir_prev.y))
                         screen.blit(textures.get(tail_map.get(key, ""),
                                                  None), pos_px)

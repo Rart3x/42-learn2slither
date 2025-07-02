@@ -42,9 +42,9 @@ def create_map() -> tuple[list[Any], pygame.Vector2]:
             row.append("0")
         gmap.append(row)
 
-    gmap[y2][x2] = "A"
-    gmap[y3][x3] = "A"
-    gmap[y4][x4] = "M"
+    gmap[y2][x2] = "G"
+    gmap[y3][x3] = "G"
+    gmap[y4][x4] = "R"
 
     return gmap, pygame.Vector2(head_x, head_y)
 
@@ -65,7 +65,7 @@ def create_new_apple(snake: Snake, gmap: list):
         pos = pygame.Vector2(x, y)
 
         if gmap[y][x] == "0" and not snake.has_component_at(pos):
-            gmap[y][x] = "A"
+            gmap[y][x] = "G"
             break
 
 
@@ -85,7 +85,7 @@ def create_new_malus(snake: Snake, gmap: list):
         pos = pygame.Vector2(x, y)
 
         if gmap[y][x] == "0" and not snake.has_component_at(pos):
-            gmap[y][x] = "M"
+            gmap[y][x] = "R"
             break
 
 

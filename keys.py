@@ -111,6 +111,7 @@ def keys(
                 snake, gmap, "NORTH", pygame.Vector2(0, -1),
                 GRID_ROWS, "y", create_new_apple, create_new_malus, running
             )
+
         elif key[pygame.K_s]:
             running = handle_directional_move(
                 snake, gmap, "SOUTH", pygame.Vector2(0, 1),
@@ -126,6 +127,7 @@ def keys(
                 snake, gmap, "EAST", pygame.Vector2(1, 0),
                 GRID_COLS, "x", create_new_apple, create_new_malus, running
             )
+
 
         last_move_time = now
 

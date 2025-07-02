@@ -24,6 +24,8 @@ def snake(screen, textures) -> bool:
     snake.add_component(body[0], orientations)
     snake.add_component(body[1], orientations)
 
+    snake.view(gmap)
+
     last_move_time = pygame.time.get_ticks()
 
     while running:
@@ -126,6 +128,8 @@ def snake(screen, textures) -> bool:
 
         pygame.display.flip()
         clock.tick(60)
+
+        snake.view(gmap)
 
         if snake.off:
             return True  # Return to menu

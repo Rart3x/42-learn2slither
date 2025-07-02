@@ -128,7 +128,6 @@ def keys(
                 GRID_COLS, "x", create_new_apple, create_new_malus, running
             )
 
-
         last_move_time = now
 
     return last_move_time, running

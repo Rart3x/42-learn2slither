@@ -130,7 +130,6 @@ def snake(screen, textures) -> bool:
         clock.tick(60)
 
         snake.view(gmap)
-        snake.print_view()
 
         if snake.off:
             return True  # Return to menu

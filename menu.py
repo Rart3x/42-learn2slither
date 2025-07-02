@@ -10,7 +10,7 @@ from textures import load_textures
 from utils import is_there_apple, is_there_malus
 
 
-def menu(screen) -> None:
+def menu(screen, sessions: int) -> None:
     """
     Main menu loop displaying title and buttons.
     Handles navigation between menu and the snake_obj game.

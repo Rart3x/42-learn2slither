@@ -14,6 +14,7 @@ class Snake:
         self.crunch = pygame.mixer.Sound('./assets/sounds/crunch.wav')
         self.positions: list[pygame.Vector2] = [initial_pos]
         self.off = False
+        self.vision = []
 
     def add_component(self, pos: pygame.Vector2, orientation: str):
         """Add a new component at the end of the snake tail"""
@@ -51,7 +52,7 @@ class Snake:
                 return True
         return False
 
-    def move(self, direction: str):
+    def move(self, direction: str, gmap: list) -> bool:
         """Snake movement with proper position and orientation updates."""
         dir_map = {
             "NORTH": pygame.Vector2(0, -1),
@@ -90,12 +91,37 @@ class Snake:
                 self.components[i].orientation = "WEST"
             elif delta == pygame.Vector2(1, 0):
                 self.components[i].orientation = "EAST"
-        
+
+        self.view(gmap)
+        self.print_view()
+
         return True
 
     def play_crunch(self):
         """Play crunch sound when snake eat apple"""
         self.crunch.play()
+
+    def print_view(self):
+        """Print the snake's vision in the form of a cross: horizontal + vertical lines with head at the center."""
+        line_view, column_view = self.vision
+        width = len(line_view)
+        height = len(column_view)
+
+        head_x = line_view.index('H')
+        head_y = column_view.index('H')
+
+        for y in range(height):
+            row = []
+            for x in range(width):
+                if x == head_x and y == head_y:
+                    row.append('H')
+                elif y == head_y:
+                    row.append(line_view[x])
+                elif x == head_x:
+                    row.append(column_view[y])
+                else:
+                    row.append(' ')
+            print("".join(row))
 
     def shrink(self):
         """Remove the last segment of the snake (the tail) if length > 1."""
@@ -105,6 +131,42 @@ class Snake:
             return True
         else:
             return False
+        
+    def view(self, gmap: list[str]):
+        """Store what the snake sees: all elements in its row and column, with markers for walls, head, and body."""
+        head_x = int(self.head.pos.x)
+        head_y = int(self.head.pos.y)
+
+        rows = len(gmap)
+        cols = len(gmap[0])
+
+        if not (0 <= head_y < rows and 0 <= head_x < cols):
+            self.vision = [['?'], ['?']]
+            return
+
+        body_positions = {(int(comp.pos.x), int(comp.pos.y)) for comp in self.components if comp is not self.head}
+
+        line_view = []
+        for x in range(cols):
+            if x == head_x:
+                line_view.append('H')
+            elif (x, head_y) in body_positions:
+                line_view.append('S')
+            else:
+                line_view.append(gmap[head_y][x])
+        line_view = ['W'] + line_view + ['W']
+
+        column_view = []
+        for y in range(rows):
+            if y == head_y:
+                column_view.append('H')
+            elif (head_x, y) in body_positions:
+                column_view.append('S')
+            else:
+                column_view.append(gmap[y][head_x])
+        column_view = ['W'] + column_view + ['W']
+
+        self.vision = [line_view, column_view]
 
 
 class SnakeComponent:

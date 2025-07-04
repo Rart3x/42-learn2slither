@@ -2,6 +2,7 @@ import pygame
 
 from classes.Button import Button
 from classes.Snake import Snake
+from classes.Sprite import Animation, AnimatedSprite
 from imports import BLUE, WHITE, GRID_COLS, GRID_ROWS, GREEN_LIGHT, GREEN_DARK
 from keys import keys
 from map import create_map, create_snake_body
@@ -12,11 +13,12 @@ from utils import is_there_apple, is_there_malus
 
 def menu(screen, sessions: int) -> None:
     """
-    Main menu loop displaying title and buttons.
-    Handles navigation between menu and the snake_obj game.
+    Main menu loop displaying title, animated sprites, and buttons.
+    Handles navigation between menu and the game.
     """
+
     def start_game():
-        """Callback to start the snake_obj game."""
+        """Callback to start the snake game."""
         nonlocal in_game
         in_game = True
 
@@ -37,7 +39,6 @@ def menu(screen, sessions: int) -> None:
         last_move_time = pygame.time.get_ticks()
 
     title = pygame.font.SysFont("Arial", 64)
-
     clock = pygame.time.Clock()
 
     cell_width = screen.get_width() // GRID_COLS
@@ -48,7 +49,6 @@ def menu(screen, sessions: int) -> None:
 
     snake_obj = Snake(player_pos)
     body, orientations = create_snake_body(gmap, snake_obj.head.pos)
-
     snake_obj.head.orientation = orientations
     snake_obj.add_component(body[0], orientations)
     snake_obj.add_component(body[1], orientations)
@@ -59,12 +59,23 @@ def menu(screen, sessions: int) -> None:
     running = True
     simulation = True
 
+    # Load animations
+    eye_anim = Animation("assets/snake/animations/eye", "eye", frames=8)
+    mouth_anim = Animation("assets/snake/animations/mouth", "mouth", frames=14)
+    ko_anim = Animation("assets/snake/animations/ko", "ko", frames=35)
+
+    eye_sprite = AnimatedSprite(eye_anim, pos=(850, 100), frame_duration=10)
+    mouth_sprite = AnimatedSprite(mouth_anim, pos=(950, 100), frame_duration=6)
+    ko_sprite = AnimatedSprite(ko_anim, pos=(1050, 100), frame_duration=5)
+
+    all_sprites = pygame.sprite.Group(eye_sprite, mouth_sprite, ko_sprite)
+
     buttons = [
         Button("Play", (screen.get_height() // 2 - 100, 250), (200, 60), start_game),
         Button("Quit", (screen.get_height() // 2 - 100, 340), (200, 60), quit_game),
     ]
 
-    focused_button = 0  # Index of focused button
+    focused_button = 0
     buttons[focused_button].focused = True
 
     while running:
@@ -79,14 +90,11 @@ def menu(screen, sessions: int) -> None:
             mouse_pos = pygame.mouse.get_pos()
             mouse_pressed = pygame.mouse.get_pressed()
 
-            # Draw grid background
             for y in range(GRID_ROWS):
                 for x in range(GRID_COLS):
                     pos_px = (x * cell_width, y * cell_height)
                     color = GREEN_LIGHT if (x + y) % 2 == 0 else GREEN_DARK
-                    pygame.draw.rect(screen, color,
-                                    (pos_px[0], pos_px[1],
-                                    cell_width, cell_height))
+                    pygame.draw.rect(screen, color, (pos_px[0], pos_px[1], cell_width, cell_height))
 
             for y in range(GRID_ROWS):
                 for x in range(GRID_COLS):
@@ -118,8 +126,7 @@ def menu(screen, sessions: int) -> None:
                                 (1, 0): "TAIL_HEAD_RIGHT"
                             }
                             key = (int(dir_prev.x), int(dir_prev.y))
-                            screen.blit(textures.get(tail_map.get(key, ""),
-                                                    None), pos_px)
+                            screen.blit(textures.get(tail_map.get(key, ""), None), pos_px)
 
                         elif 0 < index < len(snake_obj.components) - 1:
                             prev = snake_obj.components[index - 1]
@@ -127,10 +134,7 @@ def menu(screen, sessions: int) -> None:
                             dir_prev = comp.pos - prev.pos
                             dir_next = comp.pos - next.pos
 
-                            dirs = {
-                                (0, -1): "N", (0, 1): "S",
-                                (-1, 0): "W", (1, 0): "E"
-                            }
+                            dirs = {(0, -1): "N", (0, 1): "S", (-1, 0): "W", (1, 0): "E"}
 
                             d1 = dirs.get((int(dir_prev.x), int(dir_prev.y)))
                             d2 = dirs.get((int(dir_next.x), int(dir_next.y)))
@@ -147,15 +151,11 @@ def menu(screen, sessions: int) -> None:
                             if turn:
                                 screen.blit(textures[turn], pos_px)
                             else:
-                                tex = "BODY_VERTICAL" \
-                                    if comp.orientation in ("NORTH", "SOUTH") \
-                                    else "BODY_HORIZONTAL"
+                                tex = "BODY_VERTICAL" if comp.orientation in ("NORTH", "SOUTH") else "BODY_HORIZONTAL"
                                 screen.blit(textures[tex], pos_px)
 
                         else:
-                            tex = "BODY_VERTICAL" \
-                                if comp.orientation in ("NORTH", "SOUTH") \
-                                else "BODY_HORIZONTAL"
+                            tex = "BODY_VERTICAL" if comp.orientation in ("NORTH", "SOUTH") else "BODY_HORIZONTAL"
                             screen.blit(textures[tex], pos_px)
 
                     elif is_there_apple(gmap, pos_vec):
@@ -170,21 +170,15 @@ def menu(screen, sessions: int) -> None:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         quit_game()
-
                     if event.key == pygame.K_UP:
-                        # Move focus up
                         buttons[focused_button].focused = False
                         focused_button = (focused_button - 1) % len(buttons)
                         buttons[focused_button].focused = True
-
                     elif event.key == pygame.K_DOWN:
-                        # Move focus down
                         buttons[focused_button].focused = False
                         focused_button = (focused_button + 1) % len(buttons)
                         buttons[focused_button].focused = True
-
                     elif event.key == pygame.K_RETURN:
-                        # Activate focused button
                         buttons[focused_button].callback()
 
             key = pygame.key.get_pressed()
@@ -194,17 +188,17 @@ def menu(screen, sessions: int) -> None:
                 reset_simulation()
                 simulation = True
 
-            # Update buttons: hover with mouse, but only if mouse not moved away from focused
             for i, button in enumerate(buttons):
                 if i != focused_button:
                     button.update(mouse_pos, mouse_pressed)
                 else:
-                    button.hovered = False  # Prevent hover override on focused button
-
+                    button.hovered = False
                 button.draw(screen)
 
+            all_sprites.update()
+            all_sprites.draw(screen)
+
             pygame.display.flip()
-            
             clock.tick(60)
 
         else:

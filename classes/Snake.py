@@ -6,14 +6,16 @@ class Snake:
 
     def __init__(self, initial_pos: pygame.Vector2, orientation="NORTH"):
         """Snake constructor"""
+        self.board = False
         self.head = SnakeHead(initial_pos, orientation)
 
         self.components: list[SnakeComponent] = [
             self.head
         ]
         self.crunch = pygame.mixer.Sound('./assets/sounds/crunch.wav')
-        self.positions: list[pygame.Vector2] = [initial_pos]
         self.off = False
+        self.positions: list[pygame.Vector2] = [initial_pos]
+        self.score = 0
         self.vision = []
 
     def add_component(self, pos: pygame.Vector2, orientation: str):
@@ -93,7 +95,9 @@ class Snake:
                 self.components[i].orientation = "EAST"
 
         self.view(gmap)
-        self.print_view()
+        
+        if self.board:
+            self.print_view()
 
         return True
 
@@ -122,6 +126,10 @@ class Snake:
                 else:
                     row.append(' ')
             print("".join(row))
+
+    def reward(self, points: int):
+        """Increase the snake's score by the given points."""
+        self.score += points
 
     def shrink(self):
         """Remove the last segment of the snake (the tail) if length > 1."""

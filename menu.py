@@ -11,7 +11,7 @@ from textures import load_textures
 from utils import is_there_apple, is_there_malus
 
 
-def menu(screen, sessions: int) -> None:
+def menu(screen, sessions: int, board: bool) -> None:
     """
     Main menu loop displaying title, animated sprites, and buttons.
     Handles navigation between menu and the game.
@@ -52,6 +52,7 @@ def menu(screen, sessions: int) -> None:
     snake_obj.head.orientation = orientations
     snake_obj.add_component(body[0], orientations)
     snake_obj.add_component(body[1], orientations)
+    snake_obj.board = board
 
     last_move_time = pygame.time.get_ticks()
 

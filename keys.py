@@ -81,12 +81,19 @@ def handle_next_tile(
     if is_there_apple(gmap, next_pos):
         snake.play_crunch()
         snake.grow()
+        snake.reward(5)
         ate_apple = True
 
-    if is_there_malus(gmap, next_pos):
+    elif is_there_malus(gmap, next_pos):
         snake.play_crunch()
+        snake.reward(-5)
         running = snake.shrink()
         ate_malus = True
+
+    else:
+        snake.reward(-1)
+
+    print(f"Score: {snake.score}")
 
     return ate_apple, ate_malus, running
 

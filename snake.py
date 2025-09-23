@@ -8,7 +8,7 @@ from textures import load_textures
 from utils import is_there_apple, is_there_malus
 
 
-def snake(screen, textures) -> bool:
+def snake(screen, textures, board) -> bool:
     clock = pygame.time.Clock()
     running = True
 
@@ -23,9 +23,9 @@ def snake(screen, textures) -> bool:
     snake.head.orientation = orientations
     snake.add_component(body[0], orientations)
     snake.add_component(body[1], orientations)
+    snake.board = board
 
     snake.view(gmap)
-    snake.print_view()
 
     last_move_time = pygame.time.get_ticks()
 

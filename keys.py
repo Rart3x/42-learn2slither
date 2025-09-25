@@ -1,5 +1,6 @@
 import pygame
 
+from classes.Agent import Agent
 from classes.Snake import Snake
 from imports import GRID_COLS, GRID_ROWS, MOVE_DELAY
 from map import create_new_apple, create_new_malus
@@ -93,15 +94,13 @@ def handle_next_tile(
     else:
         snake.reward(-1)
 
-    print(f"Score: {snake.score}")
-
     return ate_apple, ate_malus, running
 
 
 def keys(
+    agent: Agent,
     key: pygame.key,
     gmap: list,
-    snake: Snake,
     now,
     last_move_time: int,
     running: bool
@@ -115,27 +114,31 @@ def keys(
     if now - last_move_time > MOVE_DELAY:
         if key[pygame.K_w]:
             running = handle_directional_move(
-                snake, gmap, "NORTH", pygame.Vector2(0, -1),
+                agent.snake, gmap, "NORTH", pygame.Vector2(0, -1),
                 GRID_ROWS, "y", create_new_apple, create_new_malus, running
             )
+            agent.score += agent.snake.score
 
         elif key[pygame.K_s]:
             running = handle_directional_move(
-                snake, gmap, "SOUTH", pygame.Vector2(0, 1),
+                agent.snake, gmap, "SOUTH", pygame.Vector2(0, 1),
                 GRID_ROWS, "y", create_new_apple, create_new_malus, running
             )
+            agent.score += agent.snake.score
 
         elif key[pygame.K_a]:
             running = handle_directional_move(
-                snake, gmap, "WEST", pygame.Vector2(-1, 0),
+                agent.snake, gmap, "WEST", pygame.Vector2(-1, 0),
                 GRID_COLS, "x", create_new_apple, create_new_malus, running
             )
+            agent.score += agent.snake.score
 
         elif key[pygame.K_d]:
             running = handle_directional_move(
-                snake, gmap, "EAST", pygame.Vector2(1, 0),
+                agent.snake, gmap, "EAST", pygame.Vector2(1, 0),
                 GRID_COLS, "x", create_new_apple, create_new_malus, running
             )
+            agent.score += agent.snake.score
 
         last_move_time = now
 

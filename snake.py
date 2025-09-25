@@ -1,9 +1,10 @@
 import pygame
 
+from classes.Agent import Agent
+from classes.Snake import Snake
 from imports import GREEN_DARK, GREEN_LIGHT, GRID_COLS, GRID_ROWS
 from keys import keys
 from map import create_map, create_snake_body
-from classes.Snake import Snake
 from textures import load_textures
 from utils import is_there_apple, is_there_malus
 
@@ -25,6 +26,8 @@ def snake(screen, textures, board) -> bool:
     snake.add_component(body[1], orientations)
     snake.board = board
 
+    agent = Agent(snake)
+
     snake.view(gmap)
 
     last_move_time = pygame.time.get_ticks()
@@ -39,8 +42,7 @@ def snake(screen, textures, board) -> bool:
                 return True
 
         key = pygame.key.get_pressed()
-        last_move_time, running = keys(key, gmap,
-                                       snake, now, last_move_time, running)
+        last_move_time, running = keys(agent, key, gmap, now, last_move_time, running)
 
         # Draw background
         for y in range(GRID_ROWS):
@@ -57,23 +59,23 @@ def snake(screen, textures, board) -> bool:
                 pos_px = (x * cell_width, y * cell_height)
                 pos_vec = pygame.Vector2(x, y)
 
-                if x == snake.head.pos.x and y == snake.head.pos.y:
+                if x == agent.snake.head.pos.x and y == agent.snake.head.pos.y:
                     head_tex = {
                         'NORTH': "SNAKE_HEAD_UP",
                         'SOUTH': "SNAKE_HEAD_DOWN",
                         'WEST': "SNAKE_HEAD_LEFT",
                         'EAST': "SNAKE_HEAD_RIGHT"
-                    }.get(snake.head.orientation)
+                    }.get(agent.snake.head.orientation)
 
                     if head_tex:
                         screen.blit(textures[head_tex], pos_px)
 
-                elif snake.has_component_at(pos_vec):
-                    comp = snake.get_component_at(pos_vec)
-                    index = snake.components.index(comp)
+                elif agent.snake.has_component_at(pos_vec):
+                    comp = agent.snake.get_component_at(pos_vec)
+                    index = agent.snake.components.index(comp)
 
-                    if index == len(snake.components) - 1 and index != 0:
-                        prev = snake.components[index - 1]
+                    if index == len(agent.snake.components) - 1 and index != 0:
+                        prev = agent.snake.components[index - 1]
                         dir_prev = comp.pos - prev.pos
                         
                         tail_map = {
@@ -87,9 +89,9 @@ def snake(screen, textures, board) -> bool:
                         screen.blit(textures.get(tail_map.get(key, ""),
                                                  None), pos_px)
 
-                    elif 0 < index < len(snake.components) - 1:
-                        prev = snake.components[index - 1]
-                        next = snake.components[index + 1]
+                    elif 0 < index < len(agent.snake.components) - 1:
+                        prev = agent.snake.components[index - 1]
+                        next = agent.snake.components[index + 1]
                         dir_prev = comp.pos - prev.pos
                         dir_next = comp.pos - next.pos
 
@@ -132,9 +134,9 @@ def snake(screen, textures, board) -> bool:
         pygame.display.flip()
         clock.tick(60)
 
-        snake.view(gmap)
+        agent.snake.view(gmap)
 
-        if snake.off:
+        if agent.snake.off:
             return True  # Return to menu
 
     return True

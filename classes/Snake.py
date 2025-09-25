@@ -129,7 +129,7 @@ class Snake:
 
     def reward(self, points: int):
         """Increase the snake's score by the given points."""
-        self.score += points
+        self.score = points
 
     def shrink(self):
         """Remove the last segment of the snake (the tail) if length > 1."""

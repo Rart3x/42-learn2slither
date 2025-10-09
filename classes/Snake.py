@@ -101,7 +101,7 @@ class Snake:
         if self.board:
             self.print_view()
 
-        print(self.direction)
+        self.update_views()
 
         return True
 
@@ -143,7 +143,54 @@ class Snake:
             return True
         else:
             return False
-        
+
+    def update_views(self):
+        """Update the bool views of the snake's vision."""
+        print("HORIZONTAL : ", self.vision[0], " // VERTICAL : ", self.vision[1])
+        print(self.head.pos)
+
+        head_x, head_y = self.head.pos
+        head_x, head_y = int(head_x), int(head_y)
+
+        head_x += 1
+        head_y += 1
+
+        # Update left booleans for dangers and foods
+        for i in range(0, head_x):
+            if self.vision[0][i] in ['W', 'S', 'R']:
+                #TODO: Update left booleans for dangers
+                pass
+            if self.vision[0][i] in ['G']:
+                #TODO: Update left booleans for foods
+                pass
+
+        # Update up booleans for dangers and foods
+        for i in range(0, head_y):
+            if self.vision[1][i] in ['W', 'S', 'R']:
+                #TODO: Update up booleans for dangers
+                pass
+            if self.vision[1][i] in ['G']:
+                #TODO: Update up booleans for foods
+                pass
+
+        # Update right booleans for dangers and foods
+        for i in range(head_x, len(self.vision[0])):
+            if self.vision[0][i] in ['W', 'S', 'R']:
+                #TODO: Update right booleans for dangers
+                pass
+            if self.vision[0][i] in ['G']:
+                #TODO: Update right booleans for foods
+                pass
+
+        # Update down booleans for dangers and foods
+        for i in range(head_x, len(self.vision[1])):
+            if self.vision[1][i] in ['W', 'S', 'R']:
+                #TODO: Update down booleans for dangers
+                pass
+            if self.vision[1][i] in ['G']:
+                #TODO: Update down booleans for foods
+                pass
+
     def view(self, gmap: list[str]):
         """Store what the snake sees: all elements in its row and column, with markers for walls, head, and body."""
         head_x = int(self.head.pos.x)

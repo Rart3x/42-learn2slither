@@ -9,7 +9,8 @@ from textures import load_textures
 from utils import is_there_apple, is_there_malus
 
 
-def snake(screen, textures, board) -> bool:
+def snake(screen, textures
+          , board) -> bool:
     clock = pygame.time.Clock()
     running = True
 

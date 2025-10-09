@@ -13,6 +13,7 @@ class Snake:
             self.head
         ]
         self.crunch = pygame.mixer.Sound('./assets/sounds/crunch.wav')
+        self.direction = orientation
         self.off = False
         self.positions: list[pygame.Vector2] = [initial_pos]
         self.score = 0
@@ -94,10 +95,13 @@ class Snake:
             elif delta == pygame.Vector2(1, 0):
                 self.components[i].orientation = "EAST"
 
+        self.direction = direction
         self.view(gmap)
         
         if self.board:
             self.print_view()
+
+        print(self.direction)
 
         return True
 
@@ -148,13 +152,15 @@ class Snake:
         rows = len(gmap)
         cols = len(gmap[0])
 
+        column_view = []
+        line_view = []
+
         if not (0 <= head_y < rows and 0 <= head_x < cols):
             self.vision = [['?'], ['?']]
             return
 
         body_positions = {(int(comp.pos.x), int(comp.pos.y)) for comp in self.components if comp is not self.head}
 
-        line_view = []
         for x in range(cols):
             if x == head_x:
                 line_view.append('H')
@@ -164,7 +170,6 @@ class Snake:
                 line_view.append(gmap[head_y][x])
         line_view = ['W'] + line_view + ['W']
 
-        column_view = []
         for y in range(rows):
             if y == head_y:
                 column_view.append('H')

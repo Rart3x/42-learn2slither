@@ -1,5 +1,11 @@
 from classes.Snake import Snake
+from dataclasses import dataclass
 
+class DirectionalFlags:
+    north: bool = False
+    south: bool = False
+    west: bool = False
+    east: bool = False
 
 class Agent:
     def __init__(self, snake: Snake):
@@ -9,3 +15,12 @@ class Agent:
         self.q_table = {}   # Q-value table
         self.score = 0.0    # Cumulative scores
         self.snake = snake  # Reference to the associated snake
+
+        self.dangers = DirectionalFlags()
+        self.foods = DirectionalFlags()
+
+
+    def get_state(self):
+        direction = self.snake.direction
+        head = self.snake.head
+

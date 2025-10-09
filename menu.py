@@ -37,6 +37,7 @@ def menu(screen, sessions: int, board: bool) -> None:
         snake_obj.head.orientation = orientations
         snake_obj.add_component(body[0], orientations)
         snake_obj.add_component(body[1], orientations)
+        agent.snake = snake_obj
         last_move_time = pygame.time.get_ticks()
 
     title = pygame.font.SysFont("Arial", 64)

@@ -1,5 +1,7 @@
 import pygame
 
+from classes.DirectionalFlags import DirectionalFlags
+
 
 class Snake:
     """Snake class"""
@@ -13,7 +15,9 @@ class Snake:
             self.head
         ]
         self.crunch = pygame.mixer.Sound('./assets/sounds/crunch.wav')
+        self.dangers = DirectionalFlags()
         self.direction = orientation
+        self.foods = DirectionalFlags()
         self.off = False
         self.positions: list[pygame.Vector2] = [initial_pos]
         self.score = 0
@@ -146,50 +150,39 @@ class Snake:
 
     def update_views(self):
         """Update the bool views of the snake's vision."""
-        print("HORIZONTAL : ", self.vision[0], " // VERTICAL : ", self.vision[1])
-        print(self.head.pos)
+        dangers = ['W', 'S', 'R']
+        foods = ['G']
 
         head_x, head_y = self.head.pos
-        head_x, head_y = int(head_x), int(head_y)
-
-        head_x += 1
-        head_y += 1
+        head_x, head_y = int(head_x) + 1, int(head_y) + 1
 
         # Update left booleans for dangers and foods
         for i in range(0, head_x):
-            if self.vision[0][i] in ['W', 'S', 'R']:
-                #TODO: Update left booleans for dangers
-                pass
-            if self.vision[0][i] in ['G']:
-                #TODO: Update left booleans for foods
-                pass
+            if self.vision[0][i] in dangers:
+                self.dangers.west = True
+            if self.vision[0][i] in foods:
+                self.foods.west = True
 
         # Update up booleans for dangers and foods
         for i in range(0, head_y):
-            if self.vision[1][i] in ['W', 'S', 'R']:
-                #TODO: Update up booleans for dangers
-                pass
-            if self.vision[1][i] in ['G']:
-                #TODO: Update up booleans for foods
-                pass
+            if self.vision[1][i] in dangers:
+                self.dangers.north = True
+            if self.vision[1][i] in foods:
+                self.foods.north = True
 
         # Update right booleans for dangers and foods
         for i in range(head_x, len(self.vision[0])):
-            if self.vision[0][i] in ['W', 'S', 'R']:
-                #TODO: Update right booleans for dangers
-                pass
-            if self.vision[0][i] in ['G']:
-                #TODO: Update right booleans for foods
-                pass
+            if self.vision[0][i] in dangers:
+                self.dangers.east = True
+            if self.vision[0][i] in foods:
+                self.foods.east = True
 
         # Update down booleans for dangers and foods
         for i in range(head_x, len(self.vision[1])):
-            if self.vision[1][i] in ['W', 'S', 'R']:
-                #TODO: Update down booleans for dangers
-                pass
-            if self.vision[1][i] in ['G']:
-                #TODO: Update down booleans for foods
-                pass
+            if self.vision[1][i] in dangers:
+                self.dangers.south = True
+            if self.vision[1][i] in foods:
+                self.foods.south = True
 
     def view(self, gmap: list[str]):
         """Store what the snake sees: all elements in its row and column, with markers for walls, head, and body."""

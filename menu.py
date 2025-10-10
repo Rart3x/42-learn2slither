@@ -188,6 +188,7 @@ def menu(screen, sessions: int, board: bool) -> None:
 
             key = pygame.key.get_pressed()
             last_move_time, simulation = keys(agent, key, gmap, now, last_move_time, simulation)
+            agent.update()
 
             if not simulation:
                 reset_simulation()

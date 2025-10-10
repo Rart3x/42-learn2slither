@@ -45,7 +45,6 @@ def snake(screen, textures
         key = pygame.key.get_pressed()
         last_move_time, running = keys(agent, key, gmap, now, last_move_time, running)
         agent.update()
-        agent.print_bool()
 
         # Draw background
         for y in range(GRID_ROWS):

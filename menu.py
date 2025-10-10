@@ -207,7 +207,6 @@ def menu(screen, sessions: int, board: bool) -> None:
             pygame.display.flip()
             clock.tick(60)
 
-
         else:
             back_to_menu = snake(screen, textures, board)
 

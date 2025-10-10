@@ -14,6 +14,8 @@ WIDTH = 750
 
 TITLE = "🐍 Learn2Slither 🐍"
 
+ACTIONS = ['UP', 'DOWN', 'LEFT', 'RIGHT']
+
 paths = {
     "BODY_TOP_LEFT": "assets/snake/body_top_left.png",
     "BODY_TOP_RIGHT": "assets/snake/body_top_right.png",

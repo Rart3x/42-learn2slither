@@ -134,6 +134,7 @@ class Snake:
                 else:
                     row.append(' ')
             print("".join(row))
+        print()
 
     def reward(self, points: int):
         """Increase the snake's score by the given points."""

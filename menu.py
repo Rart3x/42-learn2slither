@@ -16,6 +16,10 @@ def menu(screen, sessions: int, board: bool) -> None:
     """
     Main menu loop displaying title, animated sprites, and buttons.
     Handles navigation between menu and the game.
+
+    :param screen: pygame screen
+    :param sessions: number of sessions
+    :param board: boolean indicating whether the snake board is displayed
     """
 
     def start_game():

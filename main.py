@@ -29,5 +29,4 @@ if __name__ == "__main__":
                         help="Number of training sessions for the AI model.")
 
     args = parser.parse_args()
-
     main(args.sessions, args.board)

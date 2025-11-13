@@ -7,7 +7,10 @@ from typing import Any
 
 
 def create_map() -> tuple[list[Any], pygame.Vector2]:
-    """Create a randomized Snake map."""
+    """Create a randomized Snake map.
+
+    :return: A randomized Snake map.
+    """
     gmap = []
 
     head_x = rnd.randrange(10)
@@ -53,6 +56,9 @@ def create_new_apple(snake: Snake, gmap: list):
     """
     Create a new apple at a random position not occupied by the snake.
     Removes the one possibly created under the head.
+
+    :param snake: The Snake object.
+    :param gmap: The game map.
     """
     gmap[int(snake.head.pos.y)][int(snake.head.pos.x)] = "0"
 
@@ -73,6 +79,9 @@ def create_new_malus(snake: Snake, gmap: list):
     """
     Create a new malus at a random position not occupied by the snake.
     Removes the one possibly created under the head.
+
+    :param snake: The Snake object.
+    :param gmap: The game map.
     """
     gmap[int(snake.head.pos.y)][int(snake.head.pos.x)] = "0"
 
@@ -96,6 +105,11 @@ def create_snake_body(
     """
     Create a snake body with valid coordinates
     and return them with orientation.
+
+    :param gmap: The game map.
+    :param pos: The position of the snake.
+
+    :return: The snake body positions and orientation.
     """
     height = len(gmap)
     width = len(gmap[0]) if height > 0 else 0

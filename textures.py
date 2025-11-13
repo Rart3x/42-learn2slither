@@ -8,6 +8,11 @@ def load_textures(
 ) -> dict[str, pygame.Surface]:
     """
     Load and return a dictionary of textures scaled to cell size.
+
+    :param cell_width: width of the cell
+    :param cell_height: height of the cell
+
+    :return: a dictionary of textures scaled to cell size
     """
     textures = {}
 

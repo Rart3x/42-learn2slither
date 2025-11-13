@@ -10,6 +10,11 @@ from utils import is_there_apple, is_there_malus
 def can_change_direction(current: str, new: str) -> bool:
     """
     Prevents 180° turns (e.g., NORTH <-> SOUTH).
+
+    :param current: current direction
+    :param new: new direction
+
+    :return: True if the current direction can be changed, False otherwise
     """
     opposites = {
         "NORTH": "SOUTH",
@@ -30,9 +35,21 @@ def handle_directional_move(
     create_apple_func,
     create_malus_func,
     running: bool
-):
+) -> bool:
     """
     General handler for directional movement, interactions, and map updates.
+
+    :param snake: Snake object
+    :param gmap: game map
+    :param direction: direction
+    :param move_vec: move vector
+    :param grid_limit: grid limit
+    :param axis: axis of direction
+    :param create_apple_func: create apple function
+    :param create_malus_func: create malus function
+    :param running: game running boolean
+
+    :return: Return True if everything is ok, False otherwise
     """
     pos_val = snake.head.pos.y if axis == "y" else snake.head.pos.x
 
@@ -75,6 +92,13 @@ def handle_next_tile(
     """
     Check what's on the next tile and handle snake reaction (grow/shrink).
     Returns a tuple: (ate_apple, ate_malus)
+
+    :param gmap: game map
+    :param snake: Snake object
+    :param next_pos: next position on Vector2
+    :param running: game running boolean
+
+    :return: ate_apple, ate_malus, running booleans
     """
     ate_apple = False
     ate_malus = False
@@ -107,6 +131,15 @@ def keys(
 ) -> tuple[int, bool]:
     """
     Global keyboard handler that maps keys to snake movement and game events.
+
+    :param agent: Agent object
+    :param key: key object
+    :param gmap: game map
+    :param now: current time
+    :param last_move_time: last time
+    :param running: game running boolean
+
+    :return: Last move time and running boolean
     """
     if key[pygame.K_ESCAPE]:
         running = False
